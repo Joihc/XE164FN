@@ -248,6 +248,8 @@ void IO_vInit(void)
   ///  P10.8 - P10.11 output edge characteristic: sharp edge mode
   ///  P10.12 - P10.15 output edge characteristic: sharp edge mode
 
+  P10_OUT        =  0x0080;      // load data output register
+  P10_IOCR07     =  0x0080;      // load port control register 7
   P10_IOCR10     =  0x0080;      // load port control register 10
   P10_IOCR11     =  0x0080;      // load port control register 11
   P10_IOCR13     =  0x0080;      // load port control register 13

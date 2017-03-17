@@ -192,8 +192,14 @@ void GPT1_vInit(void)
   ///  - timer 2 interrupt group level (GLVL) = 1
   ///  - timer 2 group priority extension (GPX) = 0
 
-  GPT12E_T2IC    =  0x005D;     
+  GPT12E_T2IC    =  0x005D;  
+	
+	///  timer 3 service request node configuration:
+  ///  - timer 3 interrupt priority level (ILVL) = 1
+  ///  - timer 3 interrupt group level (GLVL) = 0
+  ///  - timer 3 group priority extension (GPX) = 1
 
+  GPT12E_T3IC    =  0x0144;   
 
   // USER CODE BEGIN (GPT1_Function,3)
 
@@ -205,6 +211,29 @@ void GPT1_vInit(void)
 
 } //  End of function GPT1_viTmr4
 
+
+// USER CODE BEGIN (Tmr3,1)
+uint8 tmr3 = 0;
+// USER CODE END
+
+void GPT1_viTmr3(void) interrupt T3INT
+{
+  // USER CODE BEGIN (Tmr3,2)
+	//5ms
+	if(tmr3++>20)
+	{
+		tmr3 = 0;
+		update_buz();
+		while_Time_Minus();
+	}
+  // USER CODE END
+
+
+  // USER CODE BEGIN (Tmr3,5)
+
+  // USER CODE END
+
+} //  End of function GPT1_viTmr3
 
 //****************************************************************************
 // @Function      void GPT1_viTmr2(void) 
@@ -241,9 +270,9 @@ void GPT1_viTmr2(void) interrupt T2INT
 	GPT1_vLoadTmr(GPT1_TIMER_2, 0x00c7);
   // USER CODE END
 
-	
+	mainUpdate();
   // USER CODE BEGIN (Tmr2,5)
-	interuptUpdate_TM1629();//1s 刷新
+
   // USER CODE END
 
 } //  End of function GPT1_viTmr2

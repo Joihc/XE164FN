@@ -130,7 +130,12 @@
 #define nop (_nop_())
 
 //******************************************************************
-#define TM1629 //74HC164
+#define TM1629 //74HC164 /	TM1629
 #define NOWKW (99)
+#defien WHILE_TIME (10)//循环查询时间间隔
+
+#define DELAY_TIME (2)//
+
+#define TRAP (CCU60_IS & 0x0400)
 
 #endif /* _CONFIG_H_ */

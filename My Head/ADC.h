@@ -38,6 +38,10 @@
 
 //初始化
 void init_adc();
+
+//有无锅
+bit get_no_p();
+
 //读取挡位
 uint8 get_switch();
 //读取线盘温度

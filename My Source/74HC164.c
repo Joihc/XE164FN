@@ -240,7 +240,7 @@ void interuptUpdate_74HC164()
           last74State =1;
           if(BuzzState == FLUSH)
           {
-            buz_on(1);
+            buz_on();
           }
         }
       }

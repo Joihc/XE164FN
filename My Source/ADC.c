@@ -371,6 +371,16 @@ uint16 in_ampere=0;
 uint16 out_ampere =0;
 uint16 vol =0;
 
+/* 无锅标准*/
+bit get_no_p()
+{
+  if(get_in_ampere() <10)//0.5V
+  {
+    return TRUE;
+  }
+  return FALSE;
+}
+
 void init_adc()
 {
 	vol_f = VOL_H1/VOL_L1;

@@ -130,6 +130,7 @@ void init_TM1629()
   display(0);//
   lastState =0;
 }
+
 //多少条线 1-8
 void set_TM1629_Leftstring(unsigned char n)
 {
@@ -578,7 +579,7 @@ void set_TM1629_UpNum()
           lastState = 1;
           if(buzzState == ON)
           {
-            buz_on(1);
+            buz_on();
           }
         }
       }

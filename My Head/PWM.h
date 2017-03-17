@@ -30,9 +30,9 @@
 #define PWM_MIN (0x0476) //35KHZ  1142
 #define PWM_MAX (0x0960) //16.66KHZ  2400
 
-void initPWM();
 void fixPWM(uint8 index);
 
+bit PWMRun();
 void openPWM();
 void stopPWM();
 

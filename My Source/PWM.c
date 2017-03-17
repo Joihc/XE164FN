@@ -4,47 +4,97 @@
 
 uint16 pwm =PWM_MIN;//	// CCU60_T12PR=0x095F -16.66    0x0476 -35KHZ
 
-void initPWM()
-{
-  pwm=PWM_MIN;
-}
 
 void fixPWM(uint8 index)
 {
     uint16 outCurrent = get_out_ampere();//输出互感器
     uint16 inCurrent = get_in_ampere();//输入互感器
-
+		uint16 p=0;
+    switch(index)
+    {
+      case 0:
+						stopPWM();
+      return;
+          case 1:
+            p = PWM1;
+      break;
+          case 2:
+            p = PWM2;
+      break;
+          case 3:
+            p = PWM3;
+      break;
+          case 4:
+            p = PWM4;
+      break;
+          case 5:
+            p = PWM5;
+      break;
+          case 6:
+            p = PWM6;
+      break;
+          case 7:
+            p = PWM7;
+      break;
+          case 8:
+            p = PWM8;
+      break;
+    }
+    //if((inCurrent < RETURN_PWM) && (pwm > PWM_RETURN))
+    //{
+    //  --pwm;
+    //}
+    //else
+    //{
+    //if(!(P3INT & 0x0C))
+    //{
+    //  pwm -= 1;
+     // P3INT |= 0x08;//开启中断
+    //}
+    //else 
+    //{
+      if(inCurrent !=0 && (outCurrent*4/inCurrent>=3))
+      {
+        //--pwm;
+				setTmrPeriod(FALSE);
+      }
+      else
+      {
+        if(outCurrent<(p-2))
+        {
+          //++pwm;
+					setTmrPeriod(TRUE);
+        }
+        else if(outCurrent>(p+2))
+        {
+          //--pwm;
+					setTmrPeriod(FALSE);
+        }
+      }
+    openPWM();
 }
 
+bit PWMRun()
+{
+	if(!TRAP && (CCU60_TCTR0 & 0x0010))
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+
+}
 void openPWM()
 {
 		CCU60_ISR |= 0x0400;//trap  复位强制中断		
-		////CCU60_MODCTR |=	0x0003;	//调制输出
 		CCU60_vStartTmr(CCU60_TIMER_12);
 }
 void stopPWM()
 {
 		CCU60_ISS |= 0x0400;//trap  强制中断
-		//CCU60_vStopTmr(CCU60_TIMER_12);
-		//CCU60_MODCTR	&= 0xFFFC;	//不调制
 		pwm=PWM_MIN;
-}
-void PWMTest(uint8 test)
-{
-	if(test  == 0)
-	{
-		stopPWM();
-	}
-	else if(test == 1)
-	{	
-		setTmrPeriod(TRUE);
-		openPWM();
-	}
-	else
-	{
-		setTmrPeriod(FALSE);
-		openPWM();
-	}				
 }
 
 void setTmrPeriod(uint4 add)
