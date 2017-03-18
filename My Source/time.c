@@ -25,7 +25,7 @@ uint4 while_Time()
 	else
 	{
 		whileTime = WHILE_TIME;
-		return TURE;
+		return TRUE;
 	}
 	
 }

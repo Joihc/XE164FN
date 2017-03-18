@@ -97,7 +97,27 @@ void MAIN_vChangeFreq(void);
 
 
 // USER CODE BEGIN (MAIN_Header,8)
+void ViewSet(uint8 ShowNum);
 
+
+void DetectNullPot();
+void DetectCoilHot();
+void DetectCoilCut();
+void DetectIGBTHot_1();
+void DetectIGBTCut_1();
+void DetectIGBTHot_2();
+void DetectIGBTCut_2();
+void DetectVLow();
+void DetectVHight();
+void DetectSwitchCut();
+void DetectUnderPotCut();
+void DetectUnderPotHot();
+void DetectIgbtError();
+void DetectTransformerCut();
+
+void setTransformerCut();
+	
+void mainUpdate();
 // USER CODE END
 
 

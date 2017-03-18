@@ -579,7 +579,7 @@ void set_TM1629_UpNum()
           lastState = 1;
           if(buzzState == ON)
           {
-            buz_on();
+            buz_on(1);
           }
         }
       }

@@ -429,6 +429,7 @@ void CCU60_viNodeI1(void) interrupt CCU60_NodeI1_INT
 		if(!CC2_vStateTmr(CC2_TIMER_7))
 		{
 			//若定时器没有关闭，说明没有检测到电流。互感器过小
+			setTransformerCut();
 		}
     // USER CODE END
 
@@ -446,6 +447,7 @@ void CCU60_viNodeI1(void) interrupt CCU60_NodeI1_INT
 		if(!CC2_vStateTmr(CC2_TIMER_7))
 		{
 			//若定时器没有关闭，说明没有检测到电流。互感器过小
+			setTransformerCut();
 		}
     // USER CODE END
 

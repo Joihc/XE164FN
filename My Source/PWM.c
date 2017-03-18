@@ -3,7 +3,7 @@
 #include "PWM.h"
 
 uint16 pwm =PWM_MIN;//	// CCU60_T12PR=0x095F -16.66    0x0476 -35KHZ
-
+uint4 run = 0;//1 run  0stop
 
 void fixPWM(uint8 index)
 {
@@ -76,26 +76,23 @@ void fixPWM(uint8 index)
 
 bit PWMRun()
 {
-	if(!TRAP && (CCU60_TCTR0 & 0x0010))
-	{
-		return TRUE;
-	}
-	else
-	{
-		return FALSE;
-	}
-
+	return run;
 }
 void openPWM()
 {
 		CCU60_ISR |= 0x0400;//trap  复位强制中断		
 		CCU60_vStartTmr(CCU60_TIMER_12);
+		IO_vSetPin(IO_P10_7);//REST
+		run = 1;
 }
 void stopPWM()
 {
 		CCU60_ISS |= 0x0400;//trap  强制中断
 		pwm=PWM_MIN;
+		IO_vResetPin(IO_P10_7);//REST
+		run = 0;
 }
+
 
 void setTmrPeriod(uint4 add)
 {

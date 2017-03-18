@@ -29,9 +29,15 @@
 #define VOL_GAP (3)
 #define VOL_H1 (220)
 #define VOL_L1 (96)
+
+#define VOL_HIGHT (450)
+#define VOL_LOW	(310)
 /*********************/
 /******温度配置*******/
 #define TEMP_GAP (2)
+#define TEMP_COIL (120)
+#define TEMP_POT (150)
+#define TEMP_IGBT (75)
 /*********************/
 
 
@@ -41,6 +47,12 @@ void init_adc();
 
 //有无锅
 bit get_no_p();
+bit get_switch_cut();
+uint4 get_coil();
+uint4 get_pot();
+uint4 get_igbt_one();
+uint4 get_igbt_two();
+uint4 get_check_vol();
 
 //读取挡位
 uint8 get_switch();

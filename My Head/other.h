@@ -14,7 +14,7 @@
 #define FAN_ALL_TIME 60
 
 #define LED_2_TOGGLE (IO_vTogglePin(IO_P7_3))
-#defube LED_1_ON (IO_vResetPin(IO_P6_0))
+#define LED_1_ON (IO_vResetPin(IO_P6_0))
 
 void init_buz();
 void buz_on(uint8 time);

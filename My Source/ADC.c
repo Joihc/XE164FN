@@ -371,6 +371,13 @@ uint16 in_ampere=0;
 uint16 out_ampere =0;
 uint16 vol =0;
 
+
+void init_adc()
+{
+	vol_f = VOL_H1/VOL_L1;
+}
+
+
 /* 无锅标准*/
 bit get_no_p()
 {
@@ -381,11 +388,99 @@ bit get_no_p()
   return FALSE;
 }
 
-void init_adc()
+bit get_switch_cut()
 {
-	vol_f = VOL_H1/VOL_L1;
+	if(get_adc(0)>NULL_NUM)
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE
+	}
+}
+/*线盘温度过高*/
+uint4 get_coil()
+{
+	int16 temp = get_coil_temp();
+	if(temp>=TEMP_COIL)
+	{
+		return 1;//超温
+	}
+	else if(temp == -40)
+	{
+		return 2;//开路
+	}
+	else
+	{
+		return 0;
+	}
+}
+uint4 get_pot()
+{
+	int16 temp = get_pot_temp();
+	if(temp>=TEMP_COIL)
+	{
+		return 1;//超温
+	}
+	else if(temp == -40)
+	{
+		return 2;//开路
+	}
+	else
+	{
+		return 0;
+	}
+}
+uint4 get_igbt_one()
+{
+	int16 temp = get_igbt_one_temp();
+	if(temp>=TEMP_IGBT)
+	{
+		return 1;//超温
+	}
+	else if(temp==-40)
+	{
+		return 2;//开路
+	}
+	else
+	{
+		return 0;
+	}
+}
+uint4 get_igbt_two()
+{
+	int16 temp = get_igbt_two_temp();
+	if(temp>=TEMP_IGBT)
+	{
+		return 1;//超温
+	}
+	else if(temp==-40)
+	{
+		return 2;//开路
+	}
+	else
+	{
+		return 0;
+	}
 }
 
+uint4 get_check_vol()
+{
+	uint16 vol = get_vol();
+	if(vol>=VOL_HIGHT)
+	{
+		return 1;
+	}
+	else if(vol<=LOW)
+	{
+		return 2;
+	}
+	else
+	{
+		return 0;
+	}
+}
 //读取挡位0
 uint8 get_switch()
 {
