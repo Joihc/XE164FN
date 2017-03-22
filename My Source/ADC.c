@@ -396,7 +396,7 @@ bit get_switch_cut()
 	}
 	else
 	{
-		return FALSE
+		return FALSE;
 	}
 }
 /*线盘温度过高*/
@@ -472,7 +472,7 @@ uint4 get_check_vol()
 	{
 		return 1;
 	}
-	else if(vol<=LOW)
+	else if(vol<=VOL_LOW)
 	{
 		return 2;
 	}

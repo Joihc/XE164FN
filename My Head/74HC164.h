@@ -40,6 +40,6 @@ void init_74HC164();
 void whileUpdate_74HC164();
 void interuptUpdate_74HC164();
 
-static void display();
+void display_164();
 
 #endif

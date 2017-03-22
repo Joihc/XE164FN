@@ -140,6 +140,7 @@ void GPT1_vInit(void);
 //****************************************************************************
 
 #define T2INT 0x20
+#define T3INT 0x21
 
 // USER CODE BEGIN (GPT1_Header,9)
 

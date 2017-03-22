@@ -12,7 +12,7 @@ void init_buz()
 	buz_on(10);
 	while(buz_time!=0);
 }
-void buz_on(uint8 time = 1)
+void buz_on(uint8 time)
 {
     if(time>buz_time)
 		{

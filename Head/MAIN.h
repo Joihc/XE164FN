@@ -80,7 +80,7 @@
 //****************************************************************************
 
 // USER CODE BEGIN (MAIN_Header,7)
-
+#include "config.h"
 // USER CODE END
 
 
@@ -134,7 +134,7 @@ void mainUpdate();
 // @Project Includes
 //****************************************************************************
 
-#include "config.h"
+
 
 // USER CODE BEGIN (MAIN_Header,10)
 

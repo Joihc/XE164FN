@@ -182,7 +182,7 @@ void init_74HC164()
   blueState = 0;
   numState = 0;
   screenNum = LED7Code[8];
-  display();
+  display_164();
 }
 void whileUpdate_74HC164()
 {
@@ -217,7 +217,7 @@ void whileUpdate_74HC164()
     numState = 0;
   }
 //  di;
-  display();
+  display_164();
 //  ei;
 }
 void interuptUpdate_74HC164()
@@ -252,7 +252,7 @@ void interuptUpdate_74HC164()
    }
 }
 
-static void display()
+void display_164()
 {
     uint8 count;
     uint8 tmp;
