@@ -29,7 +29,7 @@ uint4 while_Time()
 	}
 	
 }
-//0.1S更新一次
+//50mS更新一次
 void while_Time_Minus()
 {
 	whileTime?--whileTime:0;

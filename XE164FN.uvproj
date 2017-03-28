@@ -283,7 +283,7 @@
             <nConstSelection>1</nConstSelection>
             <NearDataString></NearDataString>
             <NearConstString></NearConstString>
-            <iStartStopString></iStartStopString>
+            <iStartStopString>0xC10000 - 0xC4FFFF</iStartStopString>
             <InterruptVectorAddress></InterruptVectorAddress>
             <WarningLevel>2</WarningLevel>
             <DisableWarningNumbers></DisableWarningNumbers>

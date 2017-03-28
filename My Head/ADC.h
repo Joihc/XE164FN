@@ -14,7 +14,7 @@
 
 #define NULL_NUM (1000)//开路数字  4.98V
 /******开关配置********/
-#define SWITCH_AREA	(10)
+#define SWITCH_AREA	(5)
 #define SWITCH_0 (96)
 #define SWITCH_1 (172)
 #define SWITCH_2 (237)
@@ -26,15 +26,15 @@
 #define SWITCH_8 (630)
 /*********************/
 /******电压配置*******/
-#define VOL_GAP (3)
-#define VOL_H1 (220)
-#define VOL_L1 (96)
+#define VOL_GAP (2)
+#define VOL_H1 (407)
+#define VOL_L1 (453)
 
 #define VOL_HIGHT (450)
 #define VOL_LOW	(310)
 /*********************/
 /******温度配置*******/
-#define TEMP_GAP (2)
+#define TEMP_GAP (1)
 #define TEMP_COIL (120)
 #define TEMP_POT (150)
 #define TEMP_IGBT (75)

@@ -30,8 +30,8 @@ enum LED_STATE
 #define STB_1 (IO_vSetPin(IO_P10_11))//(P10_OUT_P11 = 1)
 #define CLK_0 (IO_vResetPin(IO_P10_10))//(P10_OUT_P10 = 0)
 #define CLK_1 (IO_vSetPin(IO_P10_10))//(P10_OUT_P10 = 1)
-#define DIO_0 (IO_vResetPin(IO_P10_15))//(P10_OUT_P15 = 0)
-#define DIO_1 (IO_vSetPin(IO_P10_15))//(P10_OUT_P15 = 1)
+#define DIO_0 (IO_vResetPin(IO_P10_13))//(P10_OUT_P13 = 0)
+#define DIO_1 (IO_vSetPin(IO_P10_13))//(P10_OUT_P13 = 1)
 
 #define dissetmode 0x03
 #define writedatamode_z 0x40 //采用地址加一方式写

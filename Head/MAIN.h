@@ -115,7 +115,7 @@ void DetectUnderPotHot();
 void DetectIgbtError();
 void DetectTransformerCut();
 
-void setTransformerCut();
+//void setTransformerCut();
 	
 void mainUpdate();
 // USER CODE END

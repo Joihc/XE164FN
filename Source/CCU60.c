@@ -247,7 +247,7 @@ void CCU60_vInit(void)
                                  // register for channel 3
 
 
-  CCU60_T12DTC   =  0x01F0;      // load CCU60 dead time control register for 
+  CCU60_T12DTC   =  0x01D4; //3us 0x01F0;      // load CCU60 dead time control register for 
                                  // timer T12
 
   CCU60_T12MSEL  =  0x0001;      // load CCU60 T12 campture/compare mode 
@@ -423,10 +423,11 @@ void CCU60_viNodeI1(void) interrupt CCU60_NodeI1_INT
     // Capture, Compare match rising edge detection an channel 0
 		
     // USER CODE BEGIN (NodeI1,10)
-		if(!CC2_vStateTmr(CC2_TIMER_7))
+		if(CC2_vStateTmr(CC2_TIMER_7))
 		{
 			//若定时器没有关闭，说明没有检测到电流。互感器过小
-			setTransformerCut();
+			//setTransformerCut();
+			setTmrPeriod(FALSE);
 		}
 		CC2_vClearTmr(CC2_TIMER_7);
 		//开启捕获comp 2计时
@@ -442,10 +443,11 @@ void CCU60_viNodeI1(void) interrupt CCU60_NodeI1_INT
     // Capture, Compare match faling edge detection an channel 0
 
     // USER CODE BEGIN (NodeI1,11)
-		if(!CC2_vStateTmr(CC2_TIMER_7))
+		if(CC2_vStateTmr(CC2_TIMER_7))
 		{
 			//若定时器没有关闭，说明没有检测到电流。互感器过小
-			setTransformerCut();
+			//setTransformerCut();
+			setTmrPeriod(FALSE);
 		}
 		CC2_vClearTmr(CC2_TIMER_7);
 		//开启捕获comp 2计时

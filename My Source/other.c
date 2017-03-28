@@ -6,6 +6,7 @@
 */
 
 uint8 buz_time = 0;
+uint4 buz_state =0;
 
 void init_buz()
 {
@@ -19,10 +20,14 @@ void buz_on(uint8 time)
 			buz_time = time;
 		}
 }
-void update_buz()//0.1s
+void update_buz()
 {
 	if(buz_time >0)
 	{
-		--buz_time?BUZ_ON:BUZ_OFF;
+		BUZ_ON;
 	}
+}
+void buz_sum()//50ms
+{
+	buz_time>0?buz_time--:0;
 }

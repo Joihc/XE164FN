@@ -126,9 +126,9 @@ const uint16  rtTable1[] =
     0x0245,	// 78.00		13.1900
     0x023d,	// 79.00		12.7600
     0x0235,	// 80.00		12.3500
-//};
-//const uint16  rtTable2[] =
-//{
+};
+const uint16  rtTable2[] =
+{
     0x022c,	// 81.00		11.9500
     0x0224,	// 82.00		11.5600
     0x021c,	// 83.00		11.1900
@@ -172,10 +172,10 @@ const uint16  rtTable1[] =
     0x010e,	// 121.00		3.6020
     0x0109,	// 122.00		3.5060
     0x0104,	// 123.00		3.4130
-//};
+};
       //--------130/5 =[0]-[26]
-//const uint8  rtTable3[] =
-//{
+const uint8  rtTable3[] =
+{
   0xff,	// 124.00		3.3220
   0xf9,//---0x0f9,	// 125.00		3.2340
   0xf4,	// 126.00		3.1440
@@ -324,9 +324,9 @@ const uint16  rtTable1[] =
   0x10,	// 269.00		0.1641
   0x10,	// 270.00		0.1616
   0x10,	// 271.00		0.1591
-//};
-//const uint4  rtTable4[] =
-//{
+};
+const uint4  rtTable4[] =
+{
   0xf,	        // 272.00		0.1566
   0xf,	        // 273.00		0.1542
   0xf,	        // 274.00		0.1519
@@ -359,6 +359,8 @@ const uint16  rtTable1[] =
 };
 //电压比例
 float vol_f=0;
+
+uint8 temps_num =0;
 uint8 temps[] ={0,0,0,0};
 
 uint8 switch_now = 0;
@@ -407,7 +409,7 @@ uint4 get_coil()
 	{
 		return 1;//超温
 	}
-	else if(temp == -40)
+	else if(temp <= -35)
 	{
 		return 2;//开路
 	}
@@ -423,7 +425,7 @@ uint4 get_pot()
 	{
 		return 1;//超温
 	}
-	else if(temp == -40)
+	else if(temp <= -35)
 	{
 		return 2;//开路
 	}
@@ -439,7 +441,7 @@ uint4 get_igbt_one()
 	{
 		return 1;//超温
 	}
-	else if(temp==-40)
+	else if(temp <= -35)
 	{
 		return 2;//开路
 	}
@@ -455,7 +457,7 @@ uint4 get_igbt_two()
 	{
 		return 1;//超温
 	}
-	else if(temp==-40)
+	else if(temp <= -35)
 	{
 		return 2;//开路
 	}
@@ -468,11 +470,11 @@ uint4 get_igbt_two()
 uint4 get_check_vol()
 {
 	uint16 vol = get_vol();
-	if(vol>=VOL_HIGHT)
+	if(vol	>=	VOL_HIGHT)
 	{
 		return 1;
 	}
-	else if(vol<=VOL_LOW)
+	else if(vol	<=	VOL_LOW)
 	{
 		return 2;
 	}
@@ -484,17 +486,21 @@ uint4 get_check_vol()
 //读取挡位0
 uint8 get_switch()
 {
-	temps[0] = get_switch_by_anum(get_adc(0));
-	temps[1] = get_switch_by_anum(get_adc(0));
-	temps[2] = get_switch_by_anum(get_adc(0));
-	temps[3] = get_switch_by_anum(get_adc(0));
+	
+	temps[temps_num] = get_switch_by_anum(get_adc(0));
+	temps_num = (++temps_num>3)?0:temps_num;
 	if(temps[0]==temps[1]
 		&&temps[0]==temps[2]
 		&&temps[0]==temps[3]
 		&&temps[0]!=9)
 	{
+		if(switch_now!=temps[0])
+		{
+				buz_on(3);
+		}
 		switch_now=temps[0];
 	}
+
 	return switch_now;
 }
 //读取线盘温度1
@@ -663,7 +669,7 @@ uint16 get_adc(uint8 io)
 static int16 get_temp_by_anum(uint16 anum)
 {
   uint16 i = 0;
-  /*//-40 -80
+  //-40 -80
   if(anum > 556)
   {
     while(i <=120 && anum < rtTable1[i])
@@ -698,12 +704,12 @@ static int16 get_temp_by_anum(uint16 anum)
       i++;
     }
     return i+272;
-  }*/
-	while(i < 340 && anum < rtTable1[i])
-  {
-      i++;
   }
-  return i-40;
+	//while(i < 340 && anum < rtTable1[i])
+  //{
+  //    i++;
+  //}
+  //return i-40;
 }
 
 static uint8 get_switch_by_anum(uint16 anum)

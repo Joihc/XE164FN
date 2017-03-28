@@ -350,7 +350,7 @@ void CC2_viCC20(void) interrupt CC2_CC20INT
 {
   // USER CODE BEGIN (CC20,2)
 	CC2_vStopTmr(CC2_TIMER_7);
-	if(CC2_uwReadTmr(CC2_TIMER_7) <=50)//当计时小于5uS时，频率不能下降
+	if(CC2_uwReadTmr(CC2_TIMER_7) <=30)//当计时小于3uS时，频率不能下降
 	{
 		setTmrPeriod(FALSE);
 	}

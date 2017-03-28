@@ -82,14 +82,12 @@ void openPWM()
 {
 	  CCU60_ISR |= 0x0400;//trap  软件复位		
 		CCU60_vStartTmr(CCU60_TIMER_12);
-	//IO_vSetPin(IO_P10_7);//REST 硬件复位
 		run = 1;
 }
 void stopPWM()
 {
 		CCU60_ISS |= 0x0400;//trap  软件复位
 		pwm=PWM_MIN;
-	//IO_vResetPin(IO_P10_7);//REST 硬件复位
 		run = 0;
 }
 

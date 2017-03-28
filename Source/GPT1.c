@@ -151,7 +151,7 @@ void GPT1_vInit(void)
   ///  - timer 3 output toggle latch (T3OTL) is set to 0
 
   GPT12E_T3CON   =  0x0000;      // load timer 3 control register
-  GPT12E_T3      =  0x3CB0;      // load timer 3 register
+  GPT12E_T3      =  0xF63C;      // load timer 3 register
   ///  - prescaler for timer block 1 is 8
 
   ///  -----------------------------------------------------------------------
@@ -163,7 +163,7 @@ void GPT1_vInit(void)
   ///  - up/down control bit is set
 
   GPT12E_T2CON   =  0x008F;      // load timer 2 control register
-  GPT12E_T2      =  0x00C7;      // load timer 2 register
+  GPT12E_T2      =  0x0F9F;      // load timer 2 register
   ///  - prescaler for timer block 1 is 8
 
   ///  -----------------------------------------------------------------------
@@ -175,7 +175,7 @@ void GPT1_vInit(void)
   ///  - timer 4 run bit is reset
 
   GPT12E_T4CON   =  0x0027;      // load timer 4 control register
-  GPT12E_T4      =  0x3CB0;      // load timer 4 register
+  GPT12E_T4      =  0xF63C;      // load timer 4 register
   ///  - prescaler for timer block 1 is 8
 
   ///  -----------------------------------------------------------------------
@@ -199,7 +199,7 @@ void GPT1_vInit(void)
   ///  - timer 3 interrupt group level (GLVL) = 0
   ///  - timer 3 group priority extension (GPX) = 1
 
-  GPT12E_T3IC    =  0x0144;   
+  GPT12E_T3IC    =  0x0051;//0x0144;   
 
   // USER CODE BEGIN (GPT1_Function,3)
 
@@ -219,11 +219,13 @@ uint8 tmr3 = 0;
 void GPT1_viTmr3(void) interrupt T3INT
 {
   // USER CODE BEGIN (Tmr3,2)
-	//5ms
-	if(tmr3++>20)
+	//250us
+	update_buz();
+	if(tmr3++>200)
 	{
-		tmr3 = 0;
-		update_buz();
+		//50ms
+		tmr3 = 0;	
+		buz_sum();
 		while_Time_Minus();
 	}
   // USER CODE END
@@ -267,10 +269,11 @@ void GPT1_viTmr3(void) interrupt T3INT
 void GPT1_viTmr2(void) interrupt T2INT
 {
   // USER CODE BEGIN (Tmr2,2)
-	GPT1_vLoadTmr(GPT1_TIMER_2, 0x00c7);
+	GPT1_vLoadTmr(GPT1_TIMER_2, 0x0F9F);
   // USER CODE END
 
 	mainUpdate();
+	
   // USER CODE BEGIN (Tmr2,5)
 
   // USER CODE END

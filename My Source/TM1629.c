@@ -579,7 +579,7 @@ void set_TM1629_UpNum()
           lastState = 1;
           if(buzzState == ON)
           {
-            buz_on(1);
+            buz_on(3);
           }
         }
       }
@@ -879,9 +879,11 @@ void indate(unsigned char p)
 	STB_0;	//STB=0;//保证“STB”为低电平，程序不依赖于之前端口的状态
 	//保证程序在实际运行中不会出现“端口迷失”
 	nop;
+	nop;
 	for(i=0;i<8;i++)
 	{
 		CLK_0;//CLK=0;//先将“CLK”清零
+		nop;
 		nop;
 		if(p &(1<<0))
 		{
@@ -891,7 +893,10 @@ void indate(unsigned char p)
 		{
 			DIO_0;//DIO=0;//需要传送的数据的低位为“0”，则把“DIO”置高
 		}
+		nop;
+		nop;
 		CLK_1;//CLK=1;//送时钟的上升沿
+		nop;
 		nop;
 		p=p>>1;//准备送下一个BIT
 	}//送完一个字节后退出循环
@@ -901,13 +906,18 @@ void display(short state)
 {
 	DIO_1;//DIO=1;
 	nop;
+	nop;
 	CLK_1;//CLK=1;
+	nop;
 	nop;
 	STB_1;//STB=1; //通讯开始前通讯端口全部初始化为“1”
 	nop;
+	nop;
 	indate(writedatamode_z);  //传数据设置命令，设置采用地址自动加1方式写显示数据，
 	nop;
+	nop;
   STB_1;//STB=1; //数据设置命令传完后需要将“STB”置“1”
+	nop;
 	nop;
 	indate(startaddress); //传起始地址
 	//地址命令传完后，“STB”保持为“0”继续传需要显示的数据
@@ -916,9 +926,12 @@ void display(short state)
   		indate(state?buffCode_TM1629[listIndex]:0xFF);  //在连续传显示的数据过程中，“STB”一直保持为”0“
   }
 	nop;
+	nop;
 	STB_1;//STB=1; //传完所有的显示数据后（最多16BYTE）后，将“STB置“1”
 	nop;
+	nop;
 	indate(disconmode); //传显示控制命令
+	nop;
 	nop;
 	STB_1;//STB=1;    //显示控制命令传完后将“STB”置“1”
 }
