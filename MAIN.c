@@ -364,6 +364,7 @@ void MAIN_vChangeFreq(void)
 //****************************************************************************
 
 // USER CODE BEGIN (Main,1)
+uint16 initTime=0;
 uint8 switchNow = 0;
 const float switchSteps[] ={0,0.2,0.25,0.45,0.66,0.74,0.81,0.9,1};
 uint16 statusViewNum = 0;		
@@ -392,6 +393,8 @@ uint8 fanTime = FAN_ALL_TIME;
 
 uint4 haveViewSet = FALSE;
 uint4 checkTimeOn = FALSE;
+
+volatile int16 mainTest =0;
 // USER CODE END
 
 void main(void)
@@ -409,9 +412,13 @@ void main(void)
 #elif defined Screen_TM1629
 	init_TM1629();
 #endif
-	while(TRAP);//igbt is ready
 	init_buz();
 	init_adc();
+	
+	while(TRAP && (initTime<6666))
+	{
+		initTime++;
+	};//igbt or time is ready
 	delay(5000);
   // USER CODE END
 
@@ -440,17 +447,17 @@ void main(void)
 		  DetectIGBTCut_1();//IGBT探头开路
 		  DetectIGBTHot_2();//IGBT超温
 		  DetectIGBTCut_2();//IGBT探头开路
-		  //DetectVLow();//低压检测
-		  //DetectVHight();//高压检测
+			DetectVLow();//低压检测
+			DetectVHight();//高压检测	
 		  //DetectVCut();//缺相检测
 		  DetectSwitchCut();//档位开关开路
 		//}
-		if(PWMRun())//只在开通状态下检查
-    {                                         
-      DetectTransformerCut();//线盘断了或者输出互感器坏了
-		  DetectIgbtError();//IGBT驱动故障
-      DetectNullPot();//无锅检测 
-    }
+			if(PWMRun())//只在开通状态下检查
+			{     			
+				DetectTransformerCut();//线盘断了或者输出互感器坏了
+				DetectIgbtError();//IGBT驱动故障
+				DetectNullPot();//无锅检测 
+			}
 			//低压
 		  if ((statusViewNum & ((uint16)1 << 7)) && !haveViewSet)
 		  {
@@ -512,8 +519,13 @@ void main(void)
 				ViewSet(0);
 			}
 			fixPWM(0);
-			statueViewCheckTime[0] =0;//无锅次数
-	    statueViewCheckTime[15] = 0;//线盘状态
+			statueViewCheckTime[0] =	0;//无锅 正常
+	    statueViewCheckTime[1] = 	0;//线盘超温置0 正常
+			statueViewCheckTime[3] =	0;//IGBT1超温置0 正常
+	    statueViewCheckTime[5] = 	0;//IGBT2超温置0 正常
+			statueViewCheckTime[12] =	0;//锅底超温置0 正常
+	    statueViewCheckTime[13] = 0;//IGBT驱动故障置0 正常
+	    statueViewCheckTime[15] = 0;//线盘不通或者输出互感器损坏置0 正常
       //重置故障
       statusViewNum &= ~((uint16)1 << 0);//无锅 正常
       statusViewNum &= ~((uint16)1 << 1);//线盘超温置0 正常
@@ -682,6 +694,25 @@ void ViewSet(uint8 ShowNum)
 #elif defined Screen_TM1629
 void ViewSet(uint8 ShowNum)
 {
+	set_TM1629_LeftNum(switchNow);
+	set_TM1629_Leftstring(getPWMRate());
+	if (ShowNum<100 && ShowNum>0)//温度模式
+	{
+			set_TM1629_Down(get_pot_temp(), 1);
+	}
+	else
+	{
+		if(ShowNum==108 || ShowNum ==109)
+		{
+			//电压模式
+			set_TM1629_Down(get_vol(), 1);
+		}
+		else
+		{
+			//时间模式
+			set_TM1629_Down(0, 0);
+		}
+	}
 	if(ShowNum>100)
 	{
 		set_TM1629_Up(ShowNum);
@@ -689,17 +720,6 @@ void ViewSet(uint8 ShowNum)
 	else
 	{
 		set_TM1629_Up((uint8)(NOWKW*switchSteps[ShowNum]));
-	}
-	set_TM1629_LeftNum(switchNow);
-	set_TM1629_Leftstring(getPWMRate());
-	if (ShowNum<100 && ShowNum>0)//温度模式
-	{
-		set_TM1629_Down(get_out_ampere()/*get_pot_temp()*/, 1);            
-	}
-	else//时间模式
-	{
-		set_TM1629_Down(get_out_ampere()/*get_pot_temp()*/, 1);
-		//set_TM1629_Down(0, 0);
 	}
 	whileUpdate_TM1629();
 }
@@ -739,7 +759,7 @@ void DetectNullPot()
 		if (!get_no_p())
 			return;
     statueViewCheckTime[0]++;
-		if (statueViewCheckTime[0] >= 10)
+		if (statueViewCheckTime[0] >= 40)
 		{
 			statueViewCheckTime[0] = 0;
 			statusViewNum |= temp_2;//置1 无锅状态
@@ -996,7 +1016,7 @@ void DetectVLow()
 	{
 		//正常且不正常
 		delay(2);
-		if (get_vol() == 2)
+		if (get_check_vol() == 2)
 			return;
 		statusViewNum &= ~temp_2;//置0 正常
 		statueViewCheckTime[7] =0;
@@ -1012,10 +1032,10 @@ void DetectVLow()
 	{
 		//不正常且正常
 		delay(2);
-		if (get_vol() != 2)
+		if (get_check_vol() != 2)
 			return;
 		statueViewCheckTime[7]++;
-		if (statueViewCheckTime[7] >= 3)
+		if (statueViewCheckTime[7] >= 200)
 		{
 			statueViewCheckTime[7] =0;
 			statusViewNum |= temp_2;//置1 不正常
@@ -1036,7 +1056,7 @@ void DetectVHight()
 	{
 		//正常且不正常
 		delay(2);
-		if (get_vol() == 1)
+		if (get_check_vol() == 1)
 			return;
 		statusViewNum &= ~temp_2;//置0 正常
 		statueViewCheckTime[8] = 0;
@@ -1052,10 +1072,10 @@ void DetectVHight()
 	{
 		//不正常且正常
 		delay(2);
-		if (get_vol() != 1)
+		if (get_check_vol() != 1)
 			return;
 		statueViewCheckTime[8]++;
-		if (statueViewCheckTime[8] >= 3)
+		if (statueViewCheckTime[8] >= 200)
 		{
 			statueViewCheckTime[8] = 0;
 			statusViewNum |= temp_2;//置1 不正常
@@ -1227,7 +1247,7 @@ void DetectIgbtError()
 void DetectTransformerCut()
 {
 	uint16 temp_2 = (uint16)1 << 15;
-	uint16 temp = get_out_ampere();//0表示线盘断了
+	uint16 temp = get_check_out_ampere();//0表示线盘断了
 	if (temp && !(statusViewNum & temp_2))
 	{
 		//正常且正常
@@ -1254,13 +1274,18 @@ void DetectTransformerCut()
 		if (get_out_ampere())
 			return;
 		statueViewCheckTime[15]++;
-		if (statueViewCheckTime[15] >= 8)
+		if (statueViewCheckTime[15] >= 20)
 		{
 			statueViewCheckTime[15] = 0;
 			statusViewNum |= temp_2;//置1 不正常
 		}
 	}
 
+}
+
+void settest(int16 test)
+{
+	//mainTest = test;
 }
 //1S
 void mainUpdate()
@@ -1286,8 +1311,8 @@ void mainUpdate()
 				FAN_OFF;
 		}
 		
-		LED_1_ON;
-		LED_2_TOGGLE;
+		LED_1_TOGGLE;
+		LED_2_ON;
 		
 		//INTERUPT 更新区域
 #ifdef Screen_74HC164

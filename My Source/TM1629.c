@@ -386,6 +386,9 @@ void set_TM1629_Up(uint8 up)
     upNumState = FLUSH;
     kwState =OFF;
     buzzState=ON;
+		timeMarkState = OFF;
+    tempMarkState = OFF;
+    colonState = OFF;
     break;
     case 109:
     head = 12;
@@ -401,6 +404,9 @@ void set_TM1629_Up(uint8 up)
     upNumState = FLUSH;
     kwState =OFF;
     buzzState=ON;
+		timeMarkState = OFF;
+    tempMarkState = OFF;
+    colonState = OFF;
     break;
     case 110:
     head = 12;

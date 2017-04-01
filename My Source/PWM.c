@@ -4,6 +4,7 @@
 
 uint16 pwm =PWM_MIN;//	// CCU60_T12PR=0x095F -16.66    0x0476 -35KHZ
 uint4 run = 0;//1 run  0stop
+volatile bit pwmstate = 0;
 
 void fixPWM(uint8 index)
 {
@@ -39,38 +40,33 @@ void fixPWM(uint8 index)
           case 8:
             p = PWM8;
       break;
+					default:
+						p = PWM8;
+			break;
     }
-    //if((inCurrent < RETURN_PWM) && (pwm > PWM_RETURN))
-    //{
-    //  --pwm;
-    //}
-    //else
-    //{
-    //if(!(P3INT & 0x0C))
-    //{
-    //  pwm -= 1;
-     // P3INT |= 0x08;//开启中断
-    //}
-    //else 
-    //{
-      if(inCurrent !=0 && (outCurrent*4/inCurrent>=3))
-      {
-        //--pwm;
-				setTmrPeriod(FALSE);
-      }
-      else
-      {
-        if(outCurrent<(p-2))
-        {
-          //++pwm;
-					setTmrPeriod(TRUE);
-        }
-        else if(outCurrent>(p+2))
-        {
-          //--pwm;
-					setTmrPeriod(FALSE);
-        }
-      }
+		if(pwmstate == 1)
+		{
+			setTmrPeriod(0);
+			pwmstate = 0;
+		}
+		else
+		{
+			if(inCurrent !=0 && (outCurrent*4/inCurrent>=15))
+			{
+					setTmrPeriod(0);
+			}
+			else
+			{
+				if(outCurrent<(p-2))
+				{
+						setTmrPeriod(1);
+				}
+				else if(outCurrent>(p+2))
+				{
+						setTmrPeriod(0);
+				}
+			}
+		}
     openPWM();
 }
 
@@ -91,10 +87,18 @@ void stopPWM()
 		run = 0;
 }
 
-
-void setTmrPeriod(uint4 add)
+void setPWMState()
 {
-		pwm = add?clamp(++pwm):clamp(--pwm);
+	if(pwmstate == 0)
+	{
+			pwmstate = 1;
+	}
+}
+
+void setTmrPeriod(bit add)
+{
+		(add==1)?pwm++:pwm--;
+		pwm = clamp(pwm);
 		CCU60_vSetTmrPeriod(CCU60_TIMER_12,pwm);
 		CCU60_CC60SR=pwm/2;
 		CCU60_vEnableShadowTransfer(CCU60_TIMER_12);

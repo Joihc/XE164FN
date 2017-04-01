@@ -376,7 +376,7 @@ uint16 vol =0;
 
 void init_adc()
 {
-	vol_f = VOL_H1/VOL_L1;
+	vol_f = (1.0*VOL_H1)/VOL_L1;
 }
 
 
@@ -385,20 +385,20 @@ bit get_no_p()
 {
   if(get_in_ampere() <10)//0.5V
   {
-    return TRUE;
+    return 1;
   }
-  return FALSE;
+  return 0;
 }
 
 bit get_switch_cut()
 {
 	if(get_adc(0)>NULL_NUM)
 	{
-		return TRUE;
+		return 1;
 	}
 	else
 	{
-		return FALSE;
+		return 0;
 	}
 }
 /*线盘温度过高*/
@@ -482,6 +482,10 @@ uint4 get_check_vol()
 	{
 		return 0;
 	}
+}
+uint4 get_check_out_ampere()
+{
+		return get_adc(7)<2?FALSE:TRUE;
 }
 //读取挡位0
 uint8 get_switch()
@@ -598,15 +602,19 @@ uint16 get_out_ampere()
 uint16 get_vol()
 {
 	uint16 temp = get_adc(8)*vol_f;
-	if(vol-temp>VOL_GAP)
-	{
-		vol--;
-	}
-	else if(temp-vol>VOL_GAP)
-	{
-		vol++;
-	}
-	return vol;
+	//if(vol==0)
+	//{
+	//	vol = temp;
+	//}
+	//if(vol-temp>VOL_GAP)
+	//{
+	//	vol--;
+	//}
+	//else if(temp-vol>VOL_GAP)
+	//{
+	//	vol++;
+	//}
+	return temp;
 }
 
 uint16 get_adc(uint8 io)

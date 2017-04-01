@@ -26,12 +26,12 @@
 #define SWITCH_8 (630)
 /*********************/
 /******电压配置*******/
-#define VOL_GAP (2)
-#define VOL_H1 (407)
+#define VOL_GAP (4)
+#define VOL_H1 (407)//电压
 #define VOL_L1 (453)
 
 #define VOL_HIGHT (450)
-#define VOL_LOW	(310)
+#define VOL_LOW	(290)
 /*********************/
 /******温度配置*******/
 #define TEMP_GAP (1)
@@ -53,7 +53,7 @@ uint4 get_pot();
 uint4 get_igbt_one();
 uint4 get_igbt_two();
 uint4 get_check_vol();
-
+uint4 get_check_out_ampere();
 //读取挡位
 uint8 get_switch();
 //读取线盘温度

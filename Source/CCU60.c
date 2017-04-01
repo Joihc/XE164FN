@@ -423,15 +423,14 @@ void CCU60_viNodeI1(void) interrupt CCU60_NodeI1_INT
     // Capture, Compare match rising edge detection an channel 0
 		
     // USER CODE BEGIN (NodeI1,10)
-		if(CC2_vStateTmr(CC2_TIMER_7))
+		if(CC2_vStateTmr(CC2_TIMER_8))
 		{
-			//若定时器没有关闭，说明没有检测到电流。互感器过小
-			//setTransformerCut();
-			setTmrPeriod(FALSE);
+			//若定时器没有关闭，说明没有检测到电流。互感器过比例大或者互感器损坏或者电阻过小
+			setPWMState();
 		}
-		CC2_vClearTmr(CC2_TIMER_7);
 		//开启捕获comp 2计时
-		CC2_vStartTmr(CC2_TIMER_7);
+		CC2_vClearTmr(CC2_TIMER_8);
+		CC2_vStartTmr(CC2_TIMER_8);
 
     // USER CODE END
 
@@ -443,17 +442,8 @@ void CCU60_viNodeI1(void) interrupt CCU60_NodeI1_INT
     // Capture, Compare match faling edge detection an channel 0
 
     // USER CODE BEGIN (NodeI1,11)
-		if(CC2_vStateTmr(CC2_TIMER_7))
-		{
-			//若定时器没有关闭，说明没有检测到电流。互感器过小
-			//setTransformerCut();
-			setTmrPeriod(FALSE);
-		}
-		CC2_vClearTmr(CC2_TIMER_7);
-		//开启捕获comp 2计时
-		CC2_vStartTmr(CC2_TIMER_7);
-    // USER CODE END
 
+    // USER CODE END
     CCU60_ISR |= 0x0002;  // clear flag CCU60_IS_ICC60F
   }
 

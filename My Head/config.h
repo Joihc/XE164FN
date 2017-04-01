@@ -131,7 +131,7 @@
 
 //******************************************************************
 #define Screen_TM1629 //Screen_74HC164 /	Screen_TM1629
-#define NOWKW (99)
+#define NOWKW (30)
 #define WHILE_TIME (10)//循环查询时间间隔
 
 #define DELAY_TIME (2)//

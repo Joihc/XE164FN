@@ -12,7 +12,9 @@
 #define FAN_OFF (IO_vResetPin(IO_P7_1))
 #define FAN_ALL_TIME 60
 
-#define LED_2_TOGGLE (IO_vTogglePin(IO_P7_3))
+#define LED_2_TOGGLE (IO_vTogglePin(IO_P7_3))//red
+#define LED_2_ON (IO_vResetPin(IO_P7_3))
+#define LED_1_TOGGLE (IO_vTogglePin(IO_P6_0))//blue
 #define LED_1_ON (IO_vResetPin(IO_P6_0))
 
 void init_buz();
