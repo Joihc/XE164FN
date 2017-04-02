@@ -11,6 +11,21 @@ void fixPWM(uint8 index)
     uint16 outCurrent = get_out_ampere();//输出互感器
     uint16 inCurrent = get_in_ampere();//输入互感器
 		uint16 p=0;
+		int16 igbt_temp_one = get_igbt_one_temp();
+		int16 igbt_temp_two = get_igbt_two_temp();
+		igbt_temp_one = ((igbt_temp_one >= igbt_temp_two)?igbt_temp_one:igbt_temp_two);
+		igbt_temp_one =	igbt_temp_one-TEMP_SLOW_IGBT;
+		if((igbt_temp_one>0)&& (index !=0) && (index !=9))
+		{
+			if(index>igbt_temp_one)
+			{
+				index = index - igbt_temp_one;
+			}
+			else
+			{
+				index = 1;
+			}
+		}
     switch(index)
     {
       case 0:
@@ -41,8 +56,8 @@ void fixPWM(uint8 index)
             p = PWM8;
       break;
 					default:
-						p = PWM8;
-			break;
+						stopPWM();			
+			return;
     }
 		if(pwmstate == 1)
 		{

@@ -115,6 +115,7 @@ void DetectUnderPotHot();
 void DetectIgbtError();
 void DetectTransformerCut();
 
+void SetFirstOpen();
 void settest(int16 test);
 	
 void mainUpdate();

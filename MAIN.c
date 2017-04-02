@@ -364,7 +364,7 @@ void MAIN_vChangeFreq(void)
 //****************************************************************************
 
 // USER CODE BEGIN (Main,1)
-uint16 initTime=0;
+uint16 initTime=	0;
 uint8 switchNow = 0;
 const float switchSteps[] ={0,0.2,0.25,0.45,0.66,0.74,0.81,0.9,1};
 uint16 statusViewNum = 0;		
@@ -419,7 +419,7 @@ void main(void)
 	{
 		initTime++;
 	};//igbt or time is ready
-	delay(5000);
+	delay(10000);
   // USER CODE END
 
   while(1)
@@ -509,7 +509,7 @@ void main(void)
 		if (switchNow == 0)
 		{
 			//为0档位时
-			firstOpen = FALSE;
+			//firstOpen = FALSE;
 			if (fanTime == 0)
 			{
 				fanTime = 1;//等待关闭风机
@@ -685,6 +685,10 @@ void main(void)
 
 } //  End of function main
 
+void SetFirstOpen()
+{
+	firstOpen = FALSE;
+}
 #ifdef Screen_74HC164
 void ViewSet(uint8 ShowNum)
 {

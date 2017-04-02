@@ -498,9 +498,13 @@ uint8 get_switch()
 		&&temps[0]==temps[3]
 		&&temps[0]!=9)
 	{
-		if(switch_now!=temps[0])
+		if(switch_now != temps[0])
 		{
 				buz_on(3);
+		}
+		if(switch_now != 0 && temps[0] == 0)
+		{
+			SetFirstOpen();
 		}
 		switch_now=temps[0];
 	}

@@ -37,7 +37,8 @@
 #define TEMP_GAP (1)
 #define TEMP_COIL (120)
 #define TEMP_POT (150)
-#define TEMP_IGBT (75)
+#define TEMP_SLOW_IGBT (70)
+#define TEMP_IGBT (78)
 /*********************/
 
 
