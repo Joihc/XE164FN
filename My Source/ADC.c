@@ -502,7 +502,7 @@ uint8 get_switch()
 		{
 				buz_on(3);
 		}
-		if(switch_now != 0 && temps[0] == 0)
+		if(temps[0] == 0)
 		{
 			SetFirstOpen();
 		}
@@ -515,7 +515,7 @@ uint8 get_switch()
 int16 get_coil_temp()
 {
 	int16 temp = get_temp_by_anum(get_adc(1));
-	if(coil_temp == 0)
+	if((coil_temp == 0) || (coil_temp-temp>TEMP_JUMP)||(temp-coil_temp>TEMP_JUMP))
 	{
 		coil_temp = temp;
 		return temp;
@@ -534,7 +534,7 @@ int16 get_coil_temp()
 int16 get_pot_temp()
 {
 	int16 temp = get_temp_by_anum(get_adc(2));
-	if(pot_temp == 0)
+	if((pot_temp == 0)||(pot_temp-temp>TEMP_JUMP)||(temp-pot_temp>TEMP_JUMP))
 	{
 		pot_temp = temp;
 		return temp;
@@ -558,7 +558,7 @@ int16 get_null_num()
 int16 get_igbt_one_temp()
 {
 	int16 temp = get_temp_by_anum(get_adc(4));
-	if(igbt_one_temp == 0)
+	if(igbt_one_temp == 0||(igbt_one_temp-temp>TEMP_JUMP)||(temp-igbt_one_temp>TEMP_JUMP))
 	{
 		igbt_one_temp = temp;
 		return temp;
@@ -577,7 +577,7 @@ int16 get_igbt_one_temp()
 int16 get_igbt_two_temp()
 {
 	int16 temp = get_temp_by_anum(get_adc(5));
-	if(igbt_two_temp == 0)
+	if((igbt_two_temp == 0)||(igbt_two_temp-temp>TEMP_JUMP)||(temp-igbt_two_temp>TEMP_JUMP))
 	{
 		igbt_two_temp = temp;
 		return temp;

@@ -30,11 +30,12 @@
 #define VOL_H1 (407)//电压
 #define VOL_L1 (453)
 
-#define VOL_HIGHT (450)
-#define VOL_LOW	(290)
+#define VOL_HIGHT (446)
+#define VOL_LOW	(294)
 /*********************/
 /******温度配置*******/
 #define TEMP_GAP (1)
+#define TEMP_JUMP (3)
 #define TEMP_COIL (120)
 #define TEMP_POT (150)
 #define TEMP_SLOW_IGBT (70)

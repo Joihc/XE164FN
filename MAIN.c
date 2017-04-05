@@ -366,7 +366,7 @@ void MAIN_vChangeFreq(void)
 // USER CODE BEGIN (Main,1)
 uint16 initTime=	0;
 uint8 switchNow = 0;
-const float switchSteps[] ={0,0.2,0.25,0.45,0.66,0.74,0.81,0.9,1};
+const float switchSteps[] ={0,0.2,0.32,0.45,0.66,0.74,0.81,0.9,1};
 uint16 statusViewNum = 0;		
 //每位检测到状态表示左到右,
 //1表示故障0表示正常  
@@ -419,7 +419,7 @@ void main(void)
 	{
 		initTime++;
 	};//igbt or time is ready
-	delay(10000);
+	delay(6666);
   // USER CODE END
 
   while(1)
@@ -506,7 +506,7 @@ void main(void)
 				ViewSet(107);
 				haveViewSet = TRUE;
 			}
-		if (switchNow == 0)
+		if (switchNow == 0 || firstOpen)
 		{
 			//为0档位时
 			//firstOpen = FALSE;
@@ -703,6 +703,8 @@ void ViewSet(uint8 ShowNum)
 	if (ShowNum<100 && ShowNum>0)//温度模式
 	{
 			set_TM1629_Down(get_pot_temp(), 1);
+			//set_TM1629_Down(get_in_ampere(), 1);
+			//set_TM1629_Down(mainTest, 1);
 	}
 	else
 	{

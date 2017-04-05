@@ -8,8 +8,8 @@
 #ifndef _PWM_C_
 #endif
 
-#define PWM1 (35)
-#define PWM2 (70)
+#define PWM1 (65)
+#define PWM2 (90)
 #define PWM3 (110)
 #define PWM4 (140)
 #define PWM5 (170)
