@@ -383,7 +383,7 @@ void init_adc()
 /* 无锅标准*/
 bit get_no_p()
 {
-  if(get_in_ampere() <10)//0.5V
+  if(get_in_ampere() <20)//0.5V
   {
     return 1;
   }

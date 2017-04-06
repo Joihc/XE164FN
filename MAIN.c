@@ -765,7 +765,7 @@ void DetectNullPot()
 		if (!get_no_p())
 			return;
     statueViewCheckTime[0]++;
-		if (statueViewCheckTime[0] >= 40)
+		if (statueViewCheckTime[0] >= 20)
 		{
 			statueViewCheckTime[0] = 0;
 			statusViewNum |= temp_2;//置1 无锅状态
@@ -1280,7 +1280,7 @@ void DetectTransformerCut()
 		if (get_out_ampere())
 			return;
 		statueViewCheckTime[15]++;
-		if (statueViewCheckTime[15] >= 20)
+		if (statueViewCheckTime[15] >= 10)
 		{
 			statueViewCheckTime[15] = 0;
 			statusViewNum |= temp_2;//置1 不正常
