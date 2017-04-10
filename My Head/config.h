@@ -130,7 +130,7 @@
 #define nop (_nop_())
 
 //******************************************************************
-#define Screen_TM1629 //Screen_74HC164 /	Screen_TM1629
+#define Screen_74HC164 //Screen_74HC164 /	Screen_TM1629
 #define NOWKW (30)
 #define WHILE_TIME (10)//循环查询时间间隔
 
