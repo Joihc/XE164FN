@@ -26,12 +26,15 @@
 #define SWITCH_8 (630)
 /*********************/
 /******电压配置*******/
-#define VOL_GAP (4)
-#define VOL_H1 (407)//电压
+//#define VOL_GAP (5)
+#define VOL_H1 (422)//运行电压
+//#defube VOL_H2 (406)//停止电压
 #define VOL_L1 (453)
 
-#define VOL_HIGHT (446)
-#define VOL_LOW	(294)
+#define VOL_HIGHT (450)
+#define VOL_LOW	(310)
+
+#define VIL_LENGTH (20)
 /*********************/
 /******温度配置*******/
 #define TEMP_GAP (1)
@@ -78,4 +81,5 @@ uint16 get_vol();
 uint16 get_adc(uint8 io);
 int16 get_temp_by_anum(uint16 anum);
 uint8 get_switch_by_anum(uint16 anum);
+void ADCUpdate();
 #endif

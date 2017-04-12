@@ -18,12 +18,6 @@ interuptUpdate_TM1629();//滴答
 
 #endif
 
-enum LED_STATE
-{
-  OFF,
-  ON,
-  FLUSH
-};
 
 
 #define STB_0 (IO_vResetPin(IO_P10_11))//(P10_OUT_P11 = 0)

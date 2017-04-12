@@ -121,6 +121,7 @@
 #include  "ADC1.h"
 #include  "WDT.h"
 //---------------
+#include "74HC164.h"
 #include "TM1629.h"
 #include "adc.h"
 #include "PWM.h"
@@ -130,13 +131,22 @@
 #define nop (_nop_())
 
 //******************************************************************
-#define Screen_74HC164 //Screen_74HC164 /	Screen_TM1629
+#define Screen_TM1629 //Screen_74HC164 /	Screen_TM1629
 #define NOWKW (30)
 #define WHILE_TIME (10)//循环查询时间间隔
 
 #define DELAY_TIME (2)//
 
 #define TRAP (CCU60_IS & 0x0400)
+
+
+enum LED_STATE
+{
+  OFF,
+  ON,
+  FLUSH
+};
+
 
 //#define DEBUG
 

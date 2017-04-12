@@ -371,12 +371,20 @@ int16 igbt_one_temp=0;
 int16 igbt_two_temp=0;
 uint16 in_ampere=0;
 uint16 out_ampere =0;
-uint16 vol =0;
+
+
+uint16 vol[VIL_LENGTH]={0};
+uint8 vol_i =0;
 
 
 void init_adc()
 {
+	uint8 i =0;
 	vol_f = (1.0*VOL_H1)/VOL_L1;
+	for(;i<VIL_LENGTH;i++)
+	{
+		vol[i]=380;
+	}
 }
 
 
@@ -469,12 +477,12 @@ uint4 get_igbt_two()
 
 uint4 get_check_vol()
 {
-	uint16 vol = get_vol();
-	if(vol	>=	VOL_HIGHT)
+	uint16 now_vol = get_vol();
+	if(now_vol >=	VOL_HIGHT)
 	{
 		return 1;
 	}
-	else if(vol	<=	VOL_LOW)
+	else if(now_vol	<=	VOL_LOW)
 	{
 		return 2;
 	}
@@ -605,22 +613,14 @@ uint16 get_out_ampere()
 //读取电压8
 uint16 get_vol()
 {
-	uint16 temp = get_adc(8)*vol_f;
-	//if(vol==0)
-	//{
-	//	vol = temp;
-	//}
-	//if(vol-temp>VOL_GAP)
-	//{
-	//	vol--;
-	//}
-	//else if(temp-vol>VOL_GAP)
-	//{
-	//	vol++;
-	//}
-	return temp;
+	uint16 now_vol = 0;
+	uint8 i =0;
+	for(i=0;i<VIL_LENGTH;i++)
+	{
+		now_vol+=vol[i];
+	}
+	return now_vol/VIL_LENGTH;
 }
-
 uint16 get_adc(uint8 io)
 {
 	uint16 uwADCResult=0;
@@ -764,4 +764,13 @@ static uint8 get_switch_by_anum(uint16 anum)
   }
   return 9;
 
+}
+void ADCUpdate()
+{
+	if(vol_i>=VIL_LENGTH)
+	{
+		vol_i=0;
+	}
+	vol[vol_i] = get_adc(8)*vol_f;;
+	vol_i++;
 }
