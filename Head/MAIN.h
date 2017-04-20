@@ -109,6 +109,7 @@ void DetectIGBTHot_2();
 void DetectIGBTCut_2();
 void DetectVLow();
 void DetectVHight();
+void DetectVPP();
 void DetectSwitchCut();
 void DetectUnderPotCut();
 void DetectUnderPotHot();

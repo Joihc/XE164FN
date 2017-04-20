@@ -14,8 +14,10 @@
 
 #define LED_2_TOGGLE (IO_vTogglePin(IO_P7_3))//red
 #define LED_2_ON (IO_vResetPin(IO_P7_3))
+#define LED_2_OFF (IO_vSetPin(IO_P7_3))
 #define LED_1_TOGGLE (IO_vTogglePin(IO_P6_0))//blue
 #define LED_1_ON (IO_vResetPin(IO_P6_0))
+#define LED_1_OFF (IO_vSetPin(IO_P6_0))
 
 void init_buz();
 void buz_on(uint8 time);

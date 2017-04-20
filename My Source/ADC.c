@@ -375,7 +375,8 @@ uint16 out_ampere =0;
 
 uint16 vol[VIL_LENGTH]={0};
 uint8 vol_i =0;
-
+uint16 ping_vol =380;
+uint16 pong_vol =380;
 
 void init_adc()
 {
@@ -386,7 +387,12 @@ void init_adc()
 		vol[i]=380;
 	}
 }
-
+//1s更新
+void updata_adc()
+{
+	ping_vol =380;
+	pong_vol =380;
+}
 
 /* 无锅标准*/
 bit get_no_p()
@@ -475,21 +481,37 @@ uint4 get_igbt_two()
 	}
 }
 
-uint4 get_check_vol()
+uint4 get_check_vol(uint4 state,uint4 operation)
 {
 	uint16 now_vol = get_vol();
-	if(now_vol >=	VOL_HIGHT)
-	{
-		return 1;
-	}
-	else if(now_vol	<=	VOL_LOW)
+	now_vol=operation?now_vol+VOL_FIX:now_vol;
+	if(now_vol<VOL_LOW-VOL_GAP)
 	{
 		return 2;
 	}
-	else
+	else if((now_vol>=VOL_LOW-VOL_GAP)&&(now_vol<=VOL_LOW+VOL_GAP))
 	{
-		return 0;
+		return state ==2?2:0;
 	}
+	else if((now_vol>=VOL_HIGHT-VOL_GAP)&&(now_vol<=VOL_HIGHT+VOL_GAP))
+	{
+		return state ==1?1:0;
+	}
+	else if(now_vol>VOL_HIGHT+VOL_GAP)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+uint4 get_check_vol_on()
+{
+	uint16 now_pp_vol = abs(ping_vol-pong_vol);
+	if(now_pp_vol>VOL_PING_PONG)
+	{
+		return 1;
+	}
+	return 0;
 }
 uint4 get_check_out_ampere()
 {
@@ -771,6 +793,13 @@ void ADCUpdate()
 	{
 		vol_i=0;
 	}
-	vol[vol_i] = get_adc(8)*vol_f;;
+	if(vol[vol_i]<ping_vol)
+	{
+		ping_vol=vol[vol_i];
+	}
+	else if(vol[vol_i]>pong_vol)
+	{
+		pong_vol=vol[vol_i];
+	}
 	vol_i++;
 }

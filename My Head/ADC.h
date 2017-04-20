@@ -26,21 +26,24 @@
 #define SWITCH_8 (630)
 /*********************/
 /******电压配置*******/
-//#define VOL_GAP (5)
-#define VOL_H1 (422)//运行电压
-//#defube VOL_H2 (406)//停止电压
+#define VOL_GAP (5)
+#define VOL_H1 (422)//运行电压+7
+#define VOL_FIX (7)//停止电压
 #define VOL_L1 (453)
 
-#define VOL_HIGHT (450)
-#define VOL_LOW	(310)
+#define VOL_HIGHT (515) //470V
+#define VOL_LOW	(343)		//310v
 
 #define VIL_LENGTH (20)
+
+#define VOL_PING_PONG (70)
+//电压低于 电压高于  1S内电压波动超过70V 均为输入故障
 /*********************/
 /******温度配置*******/
 #define TEMP_GAP (1)
 #define TEMP_JUMP (3)
 #define TEMP_COIL (120)
-#define TEMP_POT (150)
+#define TEMP_POT (180)
 #define TEMP_SLOW_IGBT (70)
 #define TEMP_IGBT (78)
 /*********************/
@@ -49,7 +52,7 @@
 
 //初始化
 void init_adc();
-
+void updata_adc();
 //有无锅
 bit get_no_p();
 bit get_switch_cut();
@@ -57,7 +60,8 @@ uint4 get_coil();
 uint4 get_pot();
 uint4 get_igbt_one();
 uint4 get_igbt_two();
-uint4 get_check_vol();
+uint4 get_check_vol(uint4 state,uint4 operation);
+uint4 get_check_vol_on();
 uint4 get_check_out_ampere();
 //读取挡位
 uint8 get_switch();

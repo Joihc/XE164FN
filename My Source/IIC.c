@@ -95,7 +95,7 @@ uint8 IIC_RecByte()
 		SCL_1;			//SCL =1;
 		tt_5us;			//4.0us(THIGH)
 		if(SDA_T)			//if(SDA)
-			rbyte |=(0x80>>i);
+			(rbyte |=(0x80>>i));
 	}
 	SCL_0;				//SCL =0;
 	return rbyte;
