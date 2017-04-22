@@ -793,6 +793,7 @@ void ADCUpdate()
 	{
 		vol_i=0;
 	}
+	vol[vol_i] = get_adc(8);
 	if(vol[vol_i]<ping_vol)
 	{
 		ping_vol=vol[vol_i];

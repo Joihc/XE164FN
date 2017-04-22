@@ -455,14 +455,10 @@ void main(void)
 		  DetectIGBTCut_2();//IGBT探头开路
 			DetectVLow();//低压检测
 			DetectVHight();//高压检测	
-		  //DetectVCut();//缺相检测
 		  DetectSwitchCut();//档位开关开路
 		//}
 			if(PWMRun())//只在开通状态下检查
 			{     			
-				//DetectVPP();//电压波动
-				//DetectVLow();//低压检测
-				//DetectVHight();//高压检测	
 				DetectTransformerCut();//线盘断了或者输出互感器坏了
 				DetectIgbtError();//IGBT驱动故障
 				DetectNullPot();//无锅检测 
