@@ -351,6 +351,8 @@ void CC2_vInit(void)
 //****************************************************************************
 
 // USER CODE BEGIN (CC20,1)
+uint16 fi_float =0;
+uint16 se_float =0;
 // USER CODE END
 
 void CC2_viCC20(void) interrupt CC2_CC20INT
@@ -364,6 +366,8 @@ void CC2_viCC20(void) interrupt CC2_CC20INT
 	else if(CC2_M5 ==  0x0002)//下降沿捕获
 	{
 		fi_float = CC2_uwReadTmr(CC2_TIMER_8);//us
+		se_float = CCU60_T12PR - 384;//203=2.65/0.013  384=5/0.013
+		settest(abs(se_float-fi_float));
 		if(fi_float >= se_float)
 		{
 			setPWMState();
