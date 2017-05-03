@@ -163,7 +163,7 @@ void CC2_vInit(void)
   ///  - prescaler factor is 8
   ///  - timer 8 run bit is reset
 
-	CC2_T78CON     =  0x0300;      // load CAPCOM2 timer 7 and timer 8 control 
+	//CC2_T78CON     =  0x0300;      // load CAPCOM2 timer 7 and timer 8 control 
                                  // register
   ///  -----------------------------------------------------------------------
   ///  Configuration of the used CAPCOM2 Timer Port Pins:
@@ -351,17 +351,32 @@ void CC2_vInit(void)
 //****************************************************************************
 
 // USER CODE BEGIN (CC20,1)
-
 // USER CODE END
 
 void CC2_viCC20(void) interrupt CC2_CC20INT
 {
-  // USER CODE BEGIN (CC20,2)
-	if(CC2_vStateTmr(CC2_TIMER_8) && (CC2_uwReadTmr(CC2_TIMER_8) <=50))
+	if(CC2_M5 ==  0x0001)	//上升沿捕获
 	{
-		setPWMState();	
+		CC2_M5 =  0x0002;//下降沿捕获
+		CC2_vClearTmr(CC2_TIMER_8);
+		CC2_vStartTmr(CC2_TIMER_8);
 	}
-	CC2_vClearTmr(CC2_TIMER_8);
+	else if(CC2_M5 ==  0x0002)//下降沿捕获
+	{
+		fi_float = CC2_uwReadTmr(CC2_TIMER_8);//us
+		if(fi_float >= se_float)
+		{
+			setPWMState();
+		}
+		CC2_vClearTmr(CC2_TIMER_8);
+		CC2_M5 = 0x0001;
+	}
+  // USER CODE BEGIN (CC20,2)
+	//if(CC2_vStateTmr(CC2_TIMER_8) && (CC2_uwReadTmr(CC2_TIMER_8) <=50))
+	//{
+	//	setPWMState();	
+	//}
+	//CC2_vClearTmr(CC2_TIMER_8);
   // USER CODE END
 
 } //  End of function CC2_viCC20

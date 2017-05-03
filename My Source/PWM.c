@@ -2,7 +2,7 @@
 
 #include "PWM.h"
 
-uint16 pwm =PWM_MIN;//	// CCU60_T12PR=0x095F -16.66    0x0476 -35KHZ
+volatile uint16 pwm =PWM_MIN;//	// CCU60_T12PR=0x095F -16.66    0x0476 -35KHZ
 uint4 run = 0;//1 run  0stop
 volatile bit pwmstate = 0;
 

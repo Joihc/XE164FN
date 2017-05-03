@@ -396,7 +396,7 @@ uint4 haveViewSet = FALSE;
 uint4 checkTimeOn = FALSE;
 
 uint8 whileTimeUpdate =0;
-//volatile int16 mainTest =0;
+volatile int16 mainTest =0;
 // USER CODE END
 
 void main(void)
@@ -709,10 +709,10 @@ void ViewSet(uint8 ShowNum)
 	set_TM1629_Leftstring(getPWMRate());
 	if (ShowNum<100 && ShowNum>0)//温度模式
 	{
-			set_TM1629_Down(get_pot_temp(), 1);
+			//set_TM1629_Down(get_pot_temp(), 1);
 			//set_TM1629_Down(get_in_ampere(), 1);
 			//set_TM1629_Down(get_vol(), 1);//get_vol()
-			//set_TM1629_Down(mainTest, 1);
+			set_TM1629_Down(mainTest, 1);
 	}
 	else
 	{
@@ -1340,7 +1340,7 @@ void DetectTransformerCut()
 
 void settest(int16 test)
 {
-	//mainTest = test;
+	mainTest = test;
 }
 //1S
 void mainUpdate()
