@@ -27,6 +27,14 @@
 //****************************************************************************
 
 #include "MAIN.h"
+#ifdef Screen_74HC164
+	#include "74HC164.h"
+#elif defined Screen_TM1629
+	#include "TM1629.h"
+#elif defined Screen_KJ153852
+	#include "KJ153852.h"
+#endif
+
 
 
 // USER CODE BEGIN (MAIN_General,2)
@@ -413,6 +421,8 @@ void main(void)
 	init_74HC164();
 #elif defined Screen_TM1629
 	init_TM1629();
+#elif defined Screen_KJ153852
+	init_KJ153852();
 #endif
 	init_buz();
 	init_adc();
@@ -453,26 +463,26 @@ void main(void)
 		  DetectIGBTCut_1();//IGBT探头开路
 		  DetectIGBTHot_2();//IGBT超温
 		  DetectIGBTCut_2();//IGBT探头开路
-			DetectVLow();//低压检测
-			DetectVHight();//高压检测	
+			//DetectVLow();//低压检测
+			//DetectVHight();//高压检测	
 		  DetectSwitchCut();//档位开关开路
 		//}
 			if(PWMRun())//只在开通状态下检查
 			{     			
-				DetectTransformerCut();//线盘断了或者输出互感器坏了
+				//DetectTransformerCut();//线盘断了或者输出互感器坏了
 				DetectIgbtError();//IGBT驱动故障
-				DetectNullPot();//无锅检测 
+				//DetectNullPot();//无锅检测 
 			}
 			//低压
 		  if ((statusViewNum & ((uint16)1 << 7)) && !haveViewSet)
 		  {
-				ViewSet(108);
+				ViewSet(10008);
 				haveViewSet = TRUE;
 		  }
 		  //高压
 		  if ((statusViewNum & ((uint16)1 << 8)) && !haveViewSet)
 		  {
-				ViewSet(109);
+				ViewSet(10009);
 				haveViewSet = TRUE;
 		  }
 		  //缺相
@@ -484,31 +494,31 @@ void main(void)
 		  //档位开路
 		  if ((statusViewNum & ((uint16)1 << 10)) && !haveViewSet)
 		  {
-				ViewSet(113);
+				ViewSet(10013);
 				haveViewSet = TRUE;
 		  }
 		  //线盘开路
 		  if ((statusViewNum & ((uint16)1 << 2)) && !haveViewSet && !temperatureCheckTime)
 		  {
-				ViewSet(103);
+				ViewSet(10003);
 				haveViewSet = TRUE;
 		  }
 		  //IGBT1探头开路
 		  if ((statusViewNum & ((uint16)1 << 4)) && !haveViewSet && !temperatureCheckTime)
 		  {
-				ViewSet(105);
+				ViewSet(10005);
 				haveViewSet = TRUE;
 		  }
 		  //IGBT2探头开路
 		  if ((statusViewNum & ((uint16)1 << 6)) && !haveViewSet && !temperatureCheckTime)
 		  {
-				ViewSet(105);
+				ViewSet(10005);
 				haveViewSet = TRUE;
 		  }
 			//锅底探头开路
 			if ((statusViewNum & ((uint16)1 << 11)) && !haveViewSet && !temperatureCheckTime)
 			{
-				ViewSet(107);
+				ViewSet(10007);
 				haveViewSet = TRUE;
 			}
 		if (switchNow == 0 || firstOpen)
@@ -546,31 +556,31 @@ void main(void)
 			//线盘超温
 			if ((statusViewNum & ((uint16)1 << 1)) && !haveViewSet)
 			{
-				ViewSet(102);
+				ViewSet(10002);
 				haveViewSet = TRUE;
 			}
 			//IGBT1超温
 			if ((statusViewNum & ((uint16)1 << 3)) && !haveViewSet)
 			{
-				ViewSet(104);
+				ViewSet(10004);
 				haveViewSet = TRUE;
 			}
 			//IGBT2超温
 			if ((statusViewNum & ((uint16)1 << 5)) && !haveViewSet)
 			{
-				ViewSet(104);
+				ViewSet(10004);
 				haveViewSet = TRUE;
 			}
 			//锅底超温
 			if ((statusViewNum & ((uint16)1 << 12)) && !haveViewSet)
 			{
-				ViewSet(106);
+				ViewSet(10006);
 				haveViewSet = TRUE;
 			}
       //线盘不通或者输出互感器损坏
       if((statusViewNum & ((uint16)1 << 15)) && !haveViewSet)
       {                        
-         ViewSet(110);
+         ViewSet(10010);
          haveViewSet = TRUE;
          statueViewCheckTime[0] =0;//无锅次数
       }
@@ -583,7 +593,7 @@ void main(void)
 				}
 				else
 				{
-					ViewSet(112);
+					ViewSet(10012);
 				}
 				haveViewSet = TRUE;
 				checkTimeOn = TRUE;
@@ -623,7 +633,7 @@ void main(void)
           }
           else
           {
-              ViewSet(101);
+              ViewSet(10001);
           }
 				
 					haveViewSet = TRUE;
@@ -697,17 +707,17 @@ void SetFirstOpen()
 	firstOpen = FALSE;
 }
 #ifdef Screen_74HC164
-void ViewSet(uint8 ShowNum)
+void ViewSet(uint16 ShowNum)
 {
 	setNum_74HC164(ShowNum);
 	whileUpdate_74HC164();
 }
 #elif defined Screen_TM1629
-void ViewSet(uint8 ShowNum)
+void ViewSet(uint16 ShowNum)
 {
 	set_TM1629_LeftNum(switchNow);
 	set_TM1629_Leftstring(getPWMRate());
-	if (ShowNum<100 && ShowNum>0)//温度模式
+	if (ShowNum<10000 && ShowNum>0)//温度模式
 	{
 			//set_TM1629_Down(get_pot_temp(), 1);
 			//set_TM1629_Down(get_in_ampere(), 1);
@@ -724,9 +734,29 @@ void ViewSet(uint8 ShowNum)
 	}
 	else
 	{
-		set_TM1629_Up((uint8)(NOWKW*switchSteps[ShowNum]));
+		set_TM1629_Up((uint16)(NOWKW*switchSteps[ShowNum]));
 	}
 	whileUpdate_TM1629();
+}
+#elif defined Screen_KJ153852
+void ViewSet(uint16 ShowNum)
+{
+	int16 it_1 = get_igbt_one_temp();
+	int16 it_2 = get_igbt_two_temp();
+	
+	if (ShowNum<10000)
+	{
+		set_KJ153852((uint16)(NOWKW*switchSteps[ShowNum]),getPWMRate(),
+		get_vol(),get_coil_temp(),mainTest,
+		it_1>it_2?it_1:it_2);//mainTest,get_coil_temp(),get_pot_temp(),
+	}
+	else
+	{
+		set_KJ153852(ShowNum,getPWMRate(),
+		get_vol(),get_coil_temp(),mainTest,
+		it_1>it_2?it_1:it_2);
+	}	
+	whileUpdate_KJ153852();
 }
 #endif
 
@@ -1021,7 +1051,7 @@ void DetectVLow()
 		statueViewCheckTimeOut[7]=0;
 		return;
 	}
-	if ((temp != 2) && (statusViewNum & temp_2))
+	if ((temp != 2) && (statusViewNum & temp_2)&& switchNow == 0)
 	{
 		//正常且不正常
 		statueViewCheckTime[7] =0;
@@ -1071,7 +1101,7 @@ void DetectVHight()
 		statueViewCheckTimeOut[8]=0;
 		return;
 	}
-	if ((temp != 1) && (statusViewNum & temp_2))
+	if ((temp != 1) && (statusViewNum & temp_2) && switchNow == 0)
 	{
 		//正常且不正常
 		statueViewCheckTime[8] = 0;
@@ -1297,7 +1327,6 @@ void DetectIgbtError()
 		}
 		statueViewCheckTimeOut[13] =0;
 	}
-
 }
 void DetectTransformerCut()
 {
@@ -1375,19 +1404,33 @@ void mainUpdate()
 		{
 			LED_1_TOGGLE;
 		}
-		LED_2_ON;
+		
+		TRAP?LED_2_ON:LED_2_OFF;
 		
 		//INTERUPT 更新区域
 #ifdef Screen_74HC164
 			interuptUpdate_74HC164();
 #elif defined Screen_TM1629
 			interuptUpdate_TM1629();
+#elif defined Screen_KJ153852
+			interuptUpdate_KJ153852();
 #endif
       if(PWMRun() && temperatureCheckTime)//只在开通状态检查温度运转
       {
           temperatureCheckTime--;//开路延时倒计时
       }
 		updata_adc();
+}
+
+void main_500ms()
+{
+#ifdef Screen_74HC164
+			//interuptUpdate_74HC164();
+#elif defined Screen_TM1629
+			TM1629Z_500ms();
+#elif defined Screen_KJ153852
+			KJ153852_500ms();
+#endif
 }
 
 // USER CODE END

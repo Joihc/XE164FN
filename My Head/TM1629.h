@@ -16,9 +16,8 @@ interuptUpdate_TM1629();//滴答
 
 #ifndef _TM1629_C_
 
+
 #endif
-
-
 
 #define STB_0 (IO_vResetPin(IO_P10_11))//(P10_OUT_P11 = 0)
 #define STB_1 (IO_vSetPin(IO_P10_11))//(P10_OUT_P11 = 1)
@@ -33,9 +32,11 @@ interuptUpdate_TM1629();//滴答
 #define disconmode 0x8C //显示控制 亮度 0x80-0x8F（8 9 A B C D E F）
 #define datacount 16 //采用地址自动加一方式传输数据的个
 
+
 void whileUpdate_TM1629();
 void interuptUpdate_TM1629();
 void init_TM1629();
+void TM1629Z_500ms();
 
 void set_TM1629_Leftstring(unsigned char n);
 void set_TM1629_LeftNum(unsigned char n);
@@ -54,11 +55,10 @@ void set_TM1629_Vlotage();
 void set_TM1629_UpNum();
 void set_TM1629_Kw();
 
-void set_TM1629_Up(uint8 up);
+void set_TM1629_Up(uint16 up);
 void set_TM1629_Down(int16 num,uint4 trim);
 void set_TM1629_SignNum(uint4 pos,uint4 marks);
 
-void indate(unsigned char p);
-void display(short state);
+
 //void display2(unsigned char adress,unsigned char disa);
 #endif

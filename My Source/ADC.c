@@ -530,7 +530,7 @@ uint8 get_switch()
 	{
 		if(switch_now != temps[0])
 		{
-				buz_on(3);
+				buz_on(4);
 		}
 		if(temps[0] == 0)
 		{
@@ -631,6 +631,10 @@ uint16 get_in_ampere()
 uint16 get_out_ampere()
 {
 	return get_adc(7);
+}
+int16 get_real_vol()
+{
+	return (int16)(10.0f*get_vol())/vol_f;
 }
 //读取电压8
 uint16 get_vol()

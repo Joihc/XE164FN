@@ -346,11 +346,6 @@
               <FilePath>.\Head\IO.h</FilePath>
             </File>
             <File>
-              <FileName>MAIN.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Head\MAIN.h</FilePath>
-            </File>
-            <File>
               <FileName>SCS.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Head\SCS.h</FilePath>
@@ -431,6 +426,11 @@
           <GroupName>My Head Files</GroupName>
           <Files>
             <File>
+              <FileName>MAIN.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Head\MAIN.h</FilePath>
+            </File>
+            <File>
               <FileName>74HC164.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\My Head\74HC164.h</FilePath>
@@ -474,6 +474,11 @@
               <FileName>TM1629.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\My Head\TM1629.h</FilePath>
+            </File>
+            <File>
+              <FileName>KJ153852.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\My Head\KJ153852.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -519,6 +524,11 @@
               <FileName>TM1629.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\My Source\TM1629.c</FilePath>
+            </File>
+            <File>
+              <FileName>KJ153852.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\My Source\KJ153852.c</FilePath>
             </File>
           </Files>
         </Group>

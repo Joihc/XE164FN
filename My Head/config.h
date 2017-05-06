@@ -121,17 +121,19 @@
 #include  "ADC1.h"
 #include  "WDT.h"
 //---------------
-#include "74HC164.h"
-#include "TM1629.h"
+#include "time.h"
+#include "other.h"
 #include "adc.h"
 #include "PWM.h"
+
 
 #define TRUE 1
 #define FALSE 0
 #define nop (_nop_())
 
 //******************************************************************
-#define Screen_TM1629 //Screen_74HC164 /	Screen_TM1629
+#define Screen_KJ153852 //Screen_74HC164 /	Screen_TM1629 /Screen_KJ153852
+
 #define NOWKW (30)
 #define WHILE_TIME (10)//循环查询时间间隔
 
@@ -146,8 +148,7 @@ enum LED_STATE
   ON,
   FLUSH
 };
-
-
+//故障代码10000以上为保留字段
 //#define DEBUG
 
 #endif /* _CONFIG_H_ */

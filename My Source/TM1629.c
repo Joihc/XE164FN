@@ -1,3 +1,4 @@
+#ifndef _TM1629_C_
 #define _TM1629_C_
 
 #include "TM1629.h"
@@ -6,6 +7,17 @@
 			2 display() 采用地址自动加1显示
 			3 display2() 采用固定地址方式显示
 */
+static volatile uint8 startTimeSecond=0;
+static volatile uint8 startTimeMin =0;
+static volatile uint8 startTimeHour =0;
+static volatile uint8 stateTime =0;
+static volatile uint8 waterStateTime;
+
+static uint4 lastState;
+static uint4 listIndex;
+
+static void indate(unsigned char p);
+static void display(short state);
 
 const uint8 RightCode[]={
   0x7E, //0 111 1110
@@ -65,10 +77,7 @@ volatile uint8 buffCode_TM1629[]={
     0x3E, //15
 };
 
-volatile uint8 startTimeSecond=0;
-volatile uint8 startTimeMin =0;
-volatile uint8 startTimeHour =0;
-volatile uint8 stateTime =0;
+
 
 enum LED_STATE upNumState;
 enum LED_STATE timeMarkState;
@@ -84,9 +93,6 @@ enum LED_STATE phoneState;
 enum LED_STATE vlotateState;
 enum LED_STATE kwState;
 enum LED_STATE buzzState;
-
-uint4 lastState;
-uint4 listIndex;
 
 void whileUpdate_TM1629()
 {
@@ -116,9 +122,24 @@ void interuptUpdate_TM1629()
     if(startTimeMin>=60)
     {
       startTimeMin =0;
-      startTimeHour++;
+			if(startTimeHour<99)
+			{
+				startTimeHour++;
+			}
+			else
+			{
+				startTimeHour=0;
+			}
     }
   }
+}
+void TM1629Z_500ms()
+{
+	waterStateTime++;
+	if(waterStateTime>60)
+	{
+		waterStateTime = 0;
+	}
 }
 void init_TM1629()
 {
@@ -262,12 +283,12 @@ void set_TM1629_LeftNum(unsigned char n)
         200+KW 无锅
         KW     正常
 */
-void set_TM1629_Up(uint8 up)
+void set_TM1629_Up(uint16 up)
 {
   uint4 head =0;
   uint4 tail =0;
   switch (up) {
-    case 101:
+    case 10001:
     head = 12;
     tail =1;
     waterState = OFF;
@@ -282,7 +303,7 @@ void set_TM1629_Up(uint8 up)
     kwState =OFF;
     buzzState=OFF;
     break;
-    case 102:
+    case 10002:
     head = 12;
     tail = 2;
     waterState = OFF;
@@ -297,7 +318,7 @@ void set_TM1629_Up(uint8 up)
     kwState =OFF;
      buzzState=ON;
     break;
-    case 103:
+    case 10003:
     head = 12;
     tail = 3;
     waterState = OFF;
@@ -312,7 +333,7 @@ void set_TM1629_Up(uint8 up)
     kwState =OFF;
     buzzState=ON;
     break;
-    case 104:
+    case 10004:
     head = 12;
     tail = 4;
     waterState = OFF;
@@ -327,7 +348,7 @@ void set_TM1629_Up(uint8 up)
     kwState =OFF;
     buzzState=ON;
     break;
-    case 105:
+    case 10005:
     head = 12;
     tail = 5;
     waterState = OFF;
@@ -342,7 +363,7 @@ void set_TM1629_Up(uint8 up)
     kwState =OFF;
     buzzState=ON;
     break;
-    case 106:
+    case 10006:
     head = 12;
     tail = 6;
     waterState = OFF;
@@ -357,7 +378,7 @@ void set_TM1629_Up(uint8 up)
     kwState =OFF;
     buzzState=ON;
     break;
-    case 107:
+    case 10007:
     head = 12;
     tail = 7;
     waterState = OFF;
@@ -372,7 +393,7 @@ void set_TM1629_Up(uint8 up)
     kwState =OFF;
     buzzState=ON;
     break;
-    case 108:
+    case 10008:
     head = 12;
     tail = 8;
     waterState = OFF;
@@ -390,7 +411,7 @@ void set_TM1629_Up(uint8 up)
     tempMarkState = OFF;
     colonState = OFF;
     break;
-    case 109:
+    case 10009:
     head = 12;
     tail = 9;
     waterState = OFF;
@@ -408,7 +429,7 @@ void set_TM1629_Up(uint8 up)
     tempMarkState = OFF;
     colonState = OFF;
     break;
-    case 110:
+    case 10010:
     head = 12;
     tail = 12;
     waterState = OFF;
@@ -423,7 +444,7 @@ void set_TM1629_Up(uint8 up)
     kwState =OFF;
     buzzState=ON;
     break;
-    case 111:
+    case 10011:
     head = 12;
     tail = 13;
     waterState = OFF;
@@ -438,7 +459,7 @@ void set_TM1629_Up(uint8 up)
     kwState =OFF;
     buzzState=ON;
     break;
-  case 112:
+  case 10012:
     head = 12;
     tail = 14;
     waterState = OFF;
@@ -453,7 +474,7 @@ void set_TM1629_Up(uint8 up)
     kwState =OFF;
     buzzState=ON;
     break;
-    case 113:
+   case 10013:
     head = 12;
     tail = 15;
     waterState = OFF;
@@ -491,7 +512,7 @@ void set_TM1629_Down(int16 num,uint4 trim)//-999 - 9999
 {
   uint4 mask=0;
   uint4 i = 7;
-  uint4 num_use =0;
+  int16 num_use =0;
 
   if(trim)//温度模式
   {
@@ -585,7 +606,7 @@ void set_TM1629_UpNum()
           lastState = 1;
           if(buzzState == ON)
           {
-            buz_on(3);
+            buz_on(4);
           }
         }
       }
@@ -652,7 +673,7 @@ void set_TM1629_Waterg()
     buffCode_TM1629[9]=0x00;
     break;
     case FLUSH:
-    switch(stateTime % 6)
+    switch(waterStateTime % 6)
     {
       case 0:
         buffCode_TM1629[8] &=0x7E;
@@ -955,3 +976,4 @@ void display(short state)
 	STB_1;//STB=1; //传完显示数据后将“STB”置“1”
 }
 */
+#endif

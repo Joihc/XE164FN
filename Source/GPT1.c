@@ -214,6 +214,7 @@ void GPT1_vInit(void)
 
 // USER CODE BEGIN (Tmr3,1)
 uint8 tmr3 = 0;
+uint8 tmr4 =0;
 // USER CODE END
 
 void GPT1_viTmr3(void) interrupt T3INT
@@ -227,6 +228,11 @@ void GPT1_viTmr3(void) interrupt T3INT
 		tmr3 = 0;	
 		buz_sum();
 		while_Time_Minus();
+		if(tmr4++>1)
+		{
+			tmr4 =0;
+			main_500ms();
+		}
 	}
   // USER CODE END
 

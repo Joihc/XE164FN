@@ -60,95 +60,95 @@ bit last74State;
         setRedState_74HC164(FLUSH);
         setBlueState_74HC164(FLUSH);
 */
-void setNum_74HC164(uint8 num)
+void setNum_74HC164(uint16 num)
 {
   
   switch (num) {
-    case 101:
+    case 10001:
     BuzzState = OFF;
     numLedStatus = FLUSH;
     redLedStatus = FLUSH;
     blueLedStatus = OFF;
     screenNum = LED7Code[1];
     break;
-    case 102:
+    case 10002:
     BuzzState = FLUSH;
     numLedStatus = FLUSH;
     redLedStatus = FLUSH;
     blueLedStatus = OFF;
     screenNum = LED7Code[2];
     break;
-    case 103:
+    case 10003:
     BuzzState = FLUSH;
     numLedStatus = FLUSH;
     redLedStatus = FLUSH;
     blueLedStatus = OFF;
     screenNum = LED7Code[3];
     break;
-    case 104:
+    case 10004:
     BuzzState = FLUSH;
     numLedStatus = FLUSH;
     redLedStatus = FLUSH;
     blueLedStatus = OFF;
     screenNum = LED7Code[4];
     break;
-    case 105:
+    case 10005:
     BuzzState = FLUSH;
     numLedStatus = FLUSH;
     redLedStatus = FLUSH;
     blueLedStatus = OFF;
     screenNum = LED7Code[5];
     break;
-    case 106:
+    case 10006:
     BuzzState = FLUSH;
     numLedStatus = FLUSH;
     redLedStatus = FLUSH;
     blueLedStatus = OFF;
     screenNum = LED7Code[6];
     break;
-    case 107:
+    case 10007:
     BuzzState = FLUSH;
     numLedStatus = FLUSH;
     redLedStatus = FLUSH;
     blueLedStatus = OFF;
     screenNum = LED7Code[7];
     break;
-    case 108:
+    case 10008:
     BuzzState = FLUSH;
     numLedStatus = FLUSH;
     redLedStatus = FLUSH;
     blueLedStatus = OFF;
     screenNum = LED7Code[8];
     break;
-    case 109:
+    case 10009:
     BuzzState = FLUSH;
     numLedStatus = FLUSH;
     redLedStatus = FLUSH;
     blueLedStatus = OFF;
     screenNum = LED7Code[9];
     break;
-    case 110:
+    case 10010:
     BuzzState = FLUSH;
     numLedStatus = FLUSH;
     redLedStatus = FLUSH;
     blueLedStatus = OFF;
     screenNum = LED7Code[10];
     break;
-    case 111:
+    case 10011:
     BuzzState = FLUSH;
     numLedStatus = FLUSH;
     redLedStatus = FLUSH;
     blueLedStatus = OFF;
     screenNum = LED7Code[11];
     break;
-    case 112:
+    case 10012:
     BuzzState = FLUSH;
     numLedStatus = FLUSH;
     redLedStatus = FLUSH;
     blueLedStatus = OFF;
     screenNum = LED7Code[13];
     break;
-    case 113:
+    case 10013:
     BuzzState = FLUSH;
     numLedStatus = FLUSH;
     redLedStatus = FLUSH;
@@ -240,7 +240,7 @@ void interuptUpdate_74HC164()
           last74State =1;
           if(BuzzState == FLUSH)
           {
-            buz_on(3);
+            buz_on(4);
           }
         }
       }

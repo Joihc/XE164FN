@@ -28,7 +28,7 @@
 #define COM_2_0 (IO_vResetPin(IO_P10_13))//(P10_OUT_P15 = 0)
 
 
-void setNum_74HC164(uint8 num);
+void setNum_74HC164(uint16 num);
 void init_74HC164();
 void whileUpdate_74HC164();
 void interuptUpdate_74HC164();

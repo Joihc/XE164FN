@@ -2,7 +2,6 @@
 #define _ADC_H_
 
 #include "config.h"
-#include "time.h"
 
 #ifndef _ADC_C_
 /*
@@ -27,9 +26,9 @@
 /*********************/
 /******电压配置*******/
 #define VOL_GAP (5)
-#define VOL_H1 (422)//运行电压+7
+#define VOL_H1 (515)//运行电压+7
 #define VOL_FIX (7)//停止电压
-#define VOL_L1 (453)
+#define VOL_L1 (470)
 
 #define VOL_HIGHT (515) //470V
 #define VOL_LOW	(343)		//310v
@@ -79,7 +78,9 @@ int16 get_igbt_two_temp();
 uint16 get_in_ampere();
 //读取输出电流
 uint16 get_out_ampere();
-//读取电压
+//读取电压 扩大10倍
+int16 get_real_vol();
+//读取偏置电压
 uint16 get_vol();
 //
 uint16 get_adc(uint8 io);
