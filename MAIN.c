@@ -380,8 +380,9 @@ uint16 statusViewNum = 0;
 //1表示故障0表示正常  
 //0无锅/1线盘超温/2线盘开路/3IGBT1超温/4IGBT1开路/5IGBT2超温/6IGBT2开路
 //7电压低/8电压高/9缺相/10档位开关开路/11锅底开路/12锅底超温/13IGBT驱动故障/14输出互感器反/15线盘不通
-uint8 statueViewCheckTime[17] ={0,0,0,0,  0,0,0,0,  0,0,0,0,   0,0,0,0,0}; 
+uint16 statueViewCheckTime[17] ={0,0,0,0,  0,0,0,0,  0,0,0,0,   0,0,0,0,0}; 
 uint8 statueViewCheckTimeOut[17] ={0,0,0,0,  0,0,0,0,  0,0,0,0,   0,0,0,0,0}; 
+uint8 statueViewCheckTimedelay[17] ={0,0,0,0,  0,0,0,0,  0,0,0,0,   0,0,0,0,0}; 
 //16特殊字段，
 
 
@@ -463,15 +464,15 @@ void main(void)
 		  DetectIGBTCut_1();//IGBT探头开路
 		  DetectIGBTHot_2();//IGBT超温
 		  DetectIGBTCut_2();//IGBT探头开路
-			//DetectVLow();//低压检测
-			//DetectVHight();//高压检测	
+			DetectVLow();//低压检测
+			DetectVHight();//高压检测	
 		  DetectSwitchCut();//档位开关开路
 		//}
 			if(PWMRun())//只在开通状态下检查
 			{     			
-				//DetectTransformerCut();//线盘断了或者输出互感器坏了
+				DetectTransformerCut();//线盘断了或者输出互感器坏了
 				DetectIgbtError();//IGBT驱动故障
-				//DetectNullPot();//无锅检测 
+				DetectNullPot();//无锅检测 
 			}
 			//低压
 		  if ((statusViewNum & ((uint16)1 << 7)) && !haveViewSet)
@@ -723,12 +724,13 @@ void ViewSet(uint16 ShowNum)
 			//set_TM1629_Down(get_in_ampere(), 1);
 			//set_TM1629_Down(get_vol(), 1);//get_vol()
 			set_TM1629_Down(mainTest, 1);
+			//set_TM1629_Down(get_igbt_two_temp(), 1);
 	}
 	else
 	{
 		set_TM1629_Down(0, 0);
 	}
-	if(ShowNum>100)
+	if(ShowNum>10000)
 	{
 		set_TM1629_Up(ShowNum);
 	}
@@ -747,13 +749,13 @@ void ViewSet(uint16 ShowNum)
 	if (ShowNum<10000)
 	{
 		set_KJ153852((uint16)(NOWKW*switchSteps[ShowNum]),getPWMRate(),
-		get_vol(),get_coil_temp(),mainTest,
+		get_real_vol(),get_coil_temp(),get_pot_temp(),
 		it_1>it_2?it_1:it_2);//mainTest,get_coil_temp(),get_pot_temp(),
 	}
 	else
 	{
 		set_KJ153852(ShowNum,getPWMRate(),
-		get_vol(),get_coil_temp(),mainTest,
+		get_real_vol(),get_coil_temp(),mainTest,
 		it_1>it_2?it_1:it_2);
 	}	
 	whileUpdate_KJ153852();
@@ -761,6 +763,7 @@ void ViewSet(uint16 ShowNum)
 #endif
 
 // USER CODE BEGIN (MAIN_General,10)
+
 void DetectNullPot()
 {
 	uint16 temp_2 = (uint16)1 << 0;
@@ -771,7 +774,7 @@ void DetectNullPot()
 		statueViewCheckTime[0] = 0;
 		return;
 	}
-	if (!temp && (statusViewNum & temp_2))
+	if (!temp && (statusViewNum & temp_2) && (statueViewCheckTimedelay[0]>=4))
 	{
 		//检测到有锅且显示无锅
 		delay(2);//延时2ms
@@ -801,6 +804,7 @@ void DetectNullPot()
 			nullPotCheckTime =0;
       nullPotLay =0;
       checkNullPot =0;
+			statueViewCheckTimedelay[0]=0;
 		}
 	}
 }
@@ -814,7 +818,7 @@ void DetectCoilHot()
 		statueViewCheckTime[1] = 0;
 		return;
 	}
-	if ((temp != 1) && (statusViewNum & temp_2))
+	if ((temp != 1) && (statusViewNum & temp_2)&&(statueViewCheckTimedelay[1]>=4))
 	{
 		//由档位复位
 		statueViewCheckTime[1] = 0;
@@ -836,6 +840,7 @@ void DetectCoilHot()
 		{
 			statueViewCheckTime[1] = 0;
 			statusViewNum |= temp_2;//置1 不正常
+			statueViewCheckTimedelay[1]=0;
 		}
 	}
 
@@ -850,7 +855,7 @@ void DetectCoilCut()
 		statueViewCheckTime[2] = 0;
 		return;
 	}
-	if ((temp != 2) && (statusViewNum & temp_2))
+	if ((temp != 2) && (statusViewNum & temp_2)&&(statueViewCheckTimedelay[2]>=4))
 	{
 		//检查正常且显示不正常
 		delay(2);//延时2ms
@@ -877,6 +882,7 @@ void DetectCoilCut()
 		{
 			statueViewCheckTime[2] = 0;
 			statusViewNum |= temp_2;//置1 不正常
+			statueViewCheckTimedelay[2]=0;
 		}
 	}
 }
@@ -890,7 +896,7 @@ void DetectIGBTHot_1()
 		statueViewCheckTime[3]=0;
 		return;
 	}
-	if ((temp != 1) && (statusViewNum & temp_2))
+	if ((temp != 1) && (statusViewNum & temp_2)&&(statueViewCheckTimedelay[3]>=4))
 	{
 		//0档复位
 		statueViewCheckTime[3]=0;
@@ -913,6 +919,7 @@ void DetectIGBTHot_1()
 		{
 			statueViewCheckTime[3] = 0;
 			statusViewNum |= temp_2;//置1 不正常
+			statueViewCheckTimedelay[3]=0;
 		}
 	}
 }
@@ -926,7 +933,7 @@ void DetectIGBTCut_1()
 		statueViewCheckTime[4] = 0;
 		return;
 	}
-	if ((temp != 2) && (statusViewNum & temp_2))
+	if ((temp != 2) && (statusViewNum & temp_2)&&(statueViewCheckTimedelay[4]>=4))
 	{
 		//正常且不正常
 		delay(2);
@@ -953,6 +960,7 @@ void DetectIGBTCut_1()
 		{
 			statueViewCheckTime[4] = 0;
 			statusViewNum |= temp_2;//置1 不正常
+			statueViewCheckTimedelay[4]=0;
 		}
 	}
 }
@@ -966,7 +974,7 @@ void DetectIGBTHot_2()
 		statueViewCheckTime[5] = 0;
 		return;
 	}
-	if ((temp != 1) && (statusViewNum & temp_2))
+	if ((temp != 1) && (statusViewNum & temp_2)&&(statueViewCheckTimedelay[5]>=4))
 	{
 		//正常且不正常
 		statueViewCheckTime[5] = 0;
@@ -989,6 +997,7 @@ void DetectIGBTHot_2()
 		{
 			statueViewCheckTime[5] = 0;
 			statusViewNum |= temp_2;//置1 不正常
+			statueViewCheckTimedelay[5]=0;
 		}
 	}
 }
@@ -1002,7 +1011,7 @@ void DetectIGBTCut_2()
 		statueViewCheckTime[6] =0;
 		return;
 	}
-	if ((temp != 2) && (statusViewNum & temp_2))
+	if ((temp != 2) && (statusViewNum & temp_2)&&(statueViewCheckTimedelay[6]>=4))
 	{
 		//正常且不正常
 		delay(2);
@@ -1018,7 +1027,7 @@ void DetectIGBTCut_2()
 		statueViewCheckTime[6] =0;
 		return;
 	}
-	if ((temp == 1) && !(statusViewNum & temp_2))
+	if ((temp == 2) && !(statusViewNum & temp_2))
 	{
 		//不正常且正常
 		delay(2);
@@ -1029,6 +1038,7 @@ void DetectIGBTCut_2()
 		{
 			statueViewCheckTime[6] = 0;
 			statusViewNum |= temp_2;//置1 不正常
+			statueViewCheckTimedelay[6]=0;
 		}
 	}
 }
@@ -1051,7 +1061,7 @@ void DetectVLow()
 		statueViewCheckTimeOut[7]=0;
 		return;
 	}
-	if ((temp != 2) && (statusViewNum & temp_2)&& switchNow == 0)
+	if ((temp != 2) && (statusViewNum & temp_2)&& (statueViewCheckTimedelay[7]>=4))
 	{
 		//正常且不正常
 		statueViewCheckTime[7] =0;
@@ -1078,8 +1088,12 @@ void DetectVLow()
 		{
 			statueViewCheckTime[7] =0;
 			statusViewNum |= temp_2;//置1 不正常
+			statueViewCheckTimedelay[7]=0;
 		}
 		statueViewCheckTimeOut[7]=0;
+		
+		statueViewCheckTime[0] =	0;//无锅 正常
+		statueViewCheckTime[15] =0;//电流
 	}
 }
 void DetectVHight()
@@ -1101,7 +1115,7 @@ void DetectVHight()
 		statueViewCheckTimeOut[8]=0;
 		return;
 	}
-	if ((temp != 1) && (statusViewNum & temp_2) && switchNow == 0)
+	if ((temp != 1) && (statusViewNum & temp_2) && (statueViewCheckTimedelay[8]>=4))
 	{
 		//正常且不正常
 		statueViewCheckTime[8] = 0;
@@ -1128,8 +1142,12 @@ void DetectVHight()
 		{
 			statueViewCheckTime[8] = 0;
 			statusViewNum |= temp_2;//置1 不正常
+			statueViewCheckTimedelay[8] = 0;
 		}
 		statueViewCheckTimeOut[8]=0;
+		
+		statueViewCheckTime[0]=0;
+		statueViewCheckTime[15] =0;
 	}
 }
 void DetectVPP()
@@ -1178,7 +1196,7 @@ void DetectSwitchCut()
 		statueViewCheckTime[10] = 0;
 		return;
 	}
-	if ((temp != 1) && (statusViewNum & temp_2))
+	if ((temp != 1) && (statusViewNum & temp_2)&&(statueViewCheckTimedelay[10]>=4))
 	{
 		//正常且不正常
 		delay(2);
@@ -1205,6 +1223,7 @@ void DetectSwitchCut()
 		{
 			statueViewCheckTime[10] = 0;
 			statusViewNum |= temp_2;//置1 不正常
+			statueViewCheckTimedelay[10] = 0;
 		}
 	}
 }
@@ -1218,7 +1237,7 @@ void DetectUnderPotCut()
 		statueViewCheckTime[11] = 0;
 		return;
 	}
-	if ((temp != 2) && (statusViewNum & temp_2))
+	if ((temp != 2) && (statusViewNum & temp_2)&&(statueViewCheckTimedelay[11]>=4))
 	{
 		//正常且不正常
 		delay(2);
@@ -1245,6 +1264,7 @@ void DetectUnderPotCut()
 		{
 			statueViewCheckTime[11] = 0;
 			statusViewNum |= temp_2;//置1 不正常
+			statueViewCheckTimedelay[11] =0;
 		}
 	}
 }
@@ -1258,7 +1278,7 @@ void DetectUnderPotHot()
 		statueViewCheckTime[12] =0;
 		return;
 	}
-	if ((temp != 1) && (statusViewNum & temp_2))
+	if ((temp != 1) && (statusViewNum & temp_2)&&(statueViewCheckTimedelay[12]>=4))
 	{
 		//正常且不正常
 		statueViewCheckTime[12] =0;
@@ -1281,6 +1301,7 @@ void DetectUnderPotHot()
 		{
 			statueViewCheckTime[12] = 0;
 			statusViewNum |= temp_2;//置1 不正常
+			statueViewCheckTimedelay[12]=0;
 		}
 	}
 }
@@ -1332,37 +1353,36 @@ void DetectTransformerCut()
 {
 	uint16 temp_2 = (uint16)1 << 15;
 	uint16 temp = get_check_out_ampere();//0表示线盘断了
-	if (temp && !(statusViewNum & temp_2))
+	if (temp && !PWMChange()&& !(statusViewNum & temp_2))
 	{
 		//正常且正常
 		statueViewCheckTime[15] =0;
 		return;
 	}
-	if (temp && (statusViewNum & temp_2))
+	if (temp && !PWMChange() && (statusViewNum & temp_2)&&(statueViewCheckTimedelay[15]>=4))
 	{
 		//正常且不正常 0档置位
 		delay(2);
 		statueViewCheckTime[15] =0;
 		return;
 	}
-	if (!temp&& (statusViewNum & temp_2))
+	if ((!temp||PWMChange())&& (statusViewNum & temp_2))
 	{
 		//不正常且不正常
 		statueViewCheckTime[15] =0;
 		return;
 	}
-	if (!temp && !(statusViewNum & temp_2))
+	if ((!temp||PWMChange()) && !(statusViewNum & temp_2))
 	{
-		//不正常且正常
-		delay(2);
-		if (get_out_ampere())
-			return;
+		//不正常且正常		
 		statueViewCheckTime[15]++;
-		if (statueViewCheckTime[15] >=150)
+		if (statueViewCheckTime[15] >=200)
 		{
 			statueViewCheckTime[15] = 0;
 			statusViewNum |= temp_2;//置1 不正常
+			statueViewCheckTimedelay[15] =0;
 		}
+		statueViewCheckTime[0] =	0;//无锅 正常
 	}
 
 }
@@ -1374,6 +1394,14 @@ void settest(int16 test)
 //1S
 void mainUpdate()
 {
+	uint8 i =0;
+		for(;i<17;i++)
+		{
+			if(statueViewCheckTimedelay[i]<6)
+			{
+				statueViewCheckTimedelay[i]++;
+			}
+		}//恢复时间，防止闪屏
 		if(igbtErrorCheckTime < DELAY_TIME)
 		{
 			igbtErrorCheckTime++;
@@ -1404,8 +1432,7 @@ void mainUpdate()
 		{
 			LED_1_TOGGLE;
 		}
-		
-		TRAP?LED_2_ON:LED_2_OFF;
+		 LED_2_ON;
 		
 		//INTERUPT 更新区域
 #ifdef Screen_74HC164

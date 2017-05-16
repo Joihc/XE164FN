@@ -4,7 +4,10 @@
 
 volatile uint16 pwm =PWM_MIN;//	// CCU60_T12PR=0x095F -16.66    0x0476 -35KHZ
 uint4 run = 0;//1 run  0stop
-volatile bit pwmstate = 0;
+
+uint8 circle_num =0;
+uint16 fi_float =0;
+uint16 se_float =0;
 
 void fixPWM(uint8 index)
 {
@@ -59,10 +62,9 @@ void fixPWM(uint8 index)
 						stopPWM();			
 			return;
     }
-		if(pwmstate == 1)
+		if(PWM_state())
 		{
 			setTmrPeriod(0);
-			pwmstate = 0;
 		}
 		else
 		{
@@ -101,13 +103,15 @@ void stopPWM()
 		pwm=PWM_MIN;
 		run = 0;
 }
-
-void setPWMState()
+bit PWMChange()
 {
-	if(pwmstate == 0)
-	{
-			pwmstate = 1;
-	}
+	return pwm<=PWM_MIN+5;
+}
+void setPWMState(uint8 cn,uint16 ff,uint16 sf)
+{
+	circle_num =cn;
+	fi_float =ff;
+	se_float =sf;
 }
 
 void setTmrPeriod(bit add)
@@ -117,6 +121,36 @@ void setTmrPeriod(bit add)
 		CCU60_vSetTmrPeriod(CCU60_TIMER_12,pwm);
 		CCU60_CC60SR=pwm/2;
 		CCU60_vEnableShadowTransfer(CCU60_TIMER_12);
+}
+//1表示PWM不能再小了
+bit PWM_state()
+{
+	uint16 num = 0;
+	if(circle_num == 0)
+	{
+		num= se_float - fi_float;
+		if((se_float - fi_float) > 384)//203=2.65/0.013  384=5/0.013
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else
+	{
+		num=(65535-se_float)+fi_float+65535*(circle_num-1);
+		if(num > 384)
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	settest((int16)num);
 }
 uint4 getPWMRate()
 {

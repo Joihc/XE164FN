@@ -25,13 +25,13 @@
 #define SWITCH_8 (630)
 /*********************/
 /******电压配置*******/
-#define VOL_GAP (5)
+#define VOL_GAP (2)
 #define VOL_H1 (515)//运行电压+7
 #define VOL_FIX (7)//停止电压
 #define VOL_L1 (470)
 
 #define VOL_HIGHT (515) //470V
-#define VOL_LOW	(343)		//310v
+#define VOL_LOW	(335)		//310v
 
 #define VIL_LENGTH (20)
 
@@ -41,7 +41,7 @@
 /******温度配置*******/
 #define TEMP_GAP (1)
 #define TEMP_JUMP (3)
-#define TEMP_COIL (120)
+#define TEMP_COIL (150)
 #define TEMP_POT (180)
 #define TEMP_SLOW_IGBT (70)
 #define TEMP_IGBT (78)

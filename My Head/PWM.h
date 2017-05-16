@@ -8,17 +8,17 @@
 #ifndef _PWM_C_
 #endif
 
-#define PWM1 (55)
-#define PWM2 (85)
-#define PWM3 (105)
-#define PWM4 (140)
-#define PWM5 (170)
-#define PWM6 (200)
-#define PWM7 (230)
+#define PWM1 (40)
+#define PWM2 (65)
+#define PWM3 (95)
+#define PWM4 (125)
+#define PWM5 (155)
+#define PWM6 (185)
+#define PWM7 (225)
 #define PWM8 (250)
 // CCU60_T12PR=0x095F -16.66    0x0476 -35KHZ
-#define PWM_MIN (0x0577) //28KHZ 1399
-#define PWM_MAX  (0x0960) //16.66KHZ  2400
+#define PWM_MIN (0x0476) //28KHZ 1399
+#define PWM_MAX  (0x0897) //16.66KHZ  2400
 //(0x0476) //35KHZ  1142
 //(0x0527)  //30KHZ
 //(0x0577) //28KHZ 1399
@@ -30,8 +30,10 @@ void fixPWM(uint8 index);
 bit PWMRun();
 void openPWM();
 void stopPWM();
-void setPWMState();
+bit PWMChange();
+void setPWMState(uint8 cn,uint16 ff,uint16 sf);
 
+bit PWM_state();
 void setTmrPeriod(bit add);
 void PWMTest(uint8 test);
 uint4 getPWMRate();

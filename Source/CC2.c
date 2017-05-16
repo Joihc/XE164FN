@@ -178,7 +178,7 @@ void CC2_vInit(void)
   ///  - Tmr7 interrupt group level (GLVL) = 1
   ///  - Tmr7 group priority extension (GPX) = 0
 
-  //CC2_T7IC       =  0x004D;     
+    CC2_T7IC       =  0x0050;      
 
 
 
@@ -315,15 +315,16 @@ void CC2_vInit(void)
 //****************************************************************************
 
 // USER CODE BEGIN (Tmr7,1)
-
+uint8 CC2Circle =0;
 // USER CODE END
 
-//void CC2_viTmr7(void) interrupt CC2_T7INT
-//{
+void CC2_viTmr7(void) interrupt CC2_T7INT
+{
   // USER CODE BEGIN (Tmr7,2)
+	CC2Circle++;
   // USER CODE END
 
-//} //  End of function CC2_viTmr7
+} //  End of function CC2_viTmr7
 
 
 //****************************************************************************
@@ -351,30 +352,40 @@ void CC2_vInit(void)
 //****************************************************************************
 
 // USER CODE BEGIN (CC20,1)
-uint16 fi_float =0;
-uint16 se_float =0;
+bit pending_bit = 0;
+uint16 CC2_ft =0;
+uint16 CC2_st =0;
 // USER CODE END
 
 void CC2_viCC20(void) interrupt CC2_CC20INT
 {
+	if(pending_bit)
+	{
+		return;
+	}
+	pending_bit = 1;
 	if(CC2_M5 ==  0x0001)	//上升沿捕获
 	{
+		CC2_ft = CC2_uwReadTmr(CC2_TIMER_7);//us
+		//se_float = CCU60_T12PR - 384;//203=2.65/0.013  384=5/0.013
+		//settest(fi_float);
+		//if(fi_float >= se_float)
+		//{
+			//setPWMState();
+		//}
+		//CC2_vClearTmr(CC2_TIMER_8);
+		CC2Circle = 0;
 		CC2_M5 =  0x0002;//下降沿捕获
-		CC2_vClearTmr(CC2_TIMER_8);
-		CC2_vStartTmr(CC2_TIMER_8);
 	}
 	else if(CC2_M5 ==  0x0002)//下降沿捕获
 	{
-		fi_float = CC2_uwReadTmr(CC2_TIMER_8);//us
-		se_float = CCU60_T12PR - 384;//203=2.65/0.013  384=5/0.013
-		settest(abs(se_float-fi_float));
-		if(fi_float >= se_float)
-		{
-			setPWMState();
-		}
-		CC2_vClearTmr(CC2_TIMER_8);
-		CC2_M5 = 0x0001;
+		CC2_st = CC2_uwReadTmr(CC2_TIMER_7);
+		//CC2_vClearTmr(CC2_TIMER_8);	
+		//CC2_vStartTmr(CC2_TIMER_8);
+		setPWMState(CC2Circle,CC2_ft,CC2_st);
+		CC2_M5 = 0x0001;	//上升沿捕获
 	}
+	pending_bit = 0;
   // USER CODE BEGIN (CC20,2)
 	//if(CC2_vStateTmr(CC2_TIMER_8) && (CC2_uwReadTmr(CC2_TIMER_8) <=50))
 	//{

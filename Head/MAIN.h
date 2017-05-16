@@ -99,7 +99,6 @@ void MAIN_vChangeFreq(void);
 // USER CODE BEGIN (MAIN_Header,8)
 void ViewSet(uint16 ShowNum);
 
-
 void DetectNullPot();
 void DetectCoilHot();
 void DetectCoilCut();

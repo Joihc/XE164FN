@@ -319,7 +319,7 @@ void setErrorNum(uint8 num)
 	{
 		lastState = 0;
 	}
-	 if(errorState == OFF || (errorState == FLUSH && stateTime%2))
+	 if(errorState == OFF || (errorState == FLUSH && !(stateTime%2)))
 	 {
 			num =0;
 	 }
@@ -665,7 +665,7 @@ void set_KJ153852(uint16 num,uint8 fire,int16 vol,int16 lt,int16 pt,int16 it)
 			behandState = ON;
 			errorState = FLUSH;
 			buzzState = ON;
-			frontIndex = 1;
+			frontIndex = 0;
 			behandIndex =2;
 			dT=pt;
 			frontNum = vol;
@@ -679,7 +679,7 @@ void set_KJ153852(uint16 num,uint8 fire,int16 vol,int16 lt,int16 pt,int16 it)
 			behandState = ON;
 			errorState = FLUSH;
 			buzzState = ON;
-			frontIndex = 1;
+			frontIndex = 0;
 			behandIndex =2;
 			dT=pt;
 			frontNum = vol;
@@ -751,7 +751,7 @@ void set_KJ153852(uint16 num,uint8 fire,int16 vol,int16 lt,int16 pt,int16 it)
 			frontIndex = 1;
 			behandIndex = 3;
 			dT=pt;
-			frontNum = (int16)kwNum;
+			frontNum = (int16)pt;//kwNum;
     break;
   }
 }

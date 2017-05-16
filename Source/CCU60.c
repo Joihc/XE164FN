@@ -247,7 +247,7 @@ void CCU60_vInit(void)
                                  // register for channel 3
 
 
-  CCU60_T12DTC   =  0x01D4; //3us 0x01F0;      // load CCU60 dead time control register for 
+  CCU60_T12DTC   =   0x01C0; 		//2.4us  0x01C0;   2.45us 0x01C4;  // load CCU60 dead time control register for 
                                  // timer T12
 
   CCU60_T12MSEL  =  0x0001;      // load CCU60 T12 campture/compare mode 
