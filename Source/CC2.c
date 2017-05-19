@@ -137,13 +137,6 @@ void CC2_vInit(void)
 
   uwTemp         =  CC2_KSCCFG;  // dummy read to avoid pipeline effects
 
-	
-	  ///  -----------------------------------------------------------------------
-  ///  Configuration of CAPCOM2 Control:
-  ///  -----------------------------------------------------------------------
-  ///  - staggered mode is disabled
-
-  CC2_IOC        =  0x0004;      // load CAPCOM2 I/O control register
   ///  -----------------------------------------------------------------------
   ///  Configuration of CAPCOM2 Control:
   ///  -----------------------------------------------------------------------
@@ -163,8 +156,7 @@ void CC2_vInit(void)
   ///  - prescaler factor is 8
   ///  - timer 8 run bit is reset
 
-	//CC2_T78CON     =  0x0300;      // load CAPCOM2 timer 7 and timer 8 control 
-                                 // register
+
   ///  -----------------------------------------------------------------------
   ///  Configuration of the used CAPCOM2 Timer Port Pins:
   ///  -----------------------------------------------------------------------
@@ -178,7 +170,7 @@ void CC2_vInit(void)
   ///  - Tmr7 interrupt group level (GLVL) = 1
   ///  - Tmr7 group priority extension (GPX) = 0
 
-    CC2_T7IC       =  0x0050;      
+  CC2_T7IC       =  0x004D;     
 
 
 
@@ -284,7 +276,7 @@ void CC2_vInit(void)
   CC2_CC20IC     =  0x004C;     
 
 
-	CC2_T78CON_T7R    = 1;
+
 
   // USER CODE BEGIN (CC31,3)
 
@@ -315,13 +307,12 @@ void CC2_vInit(void)
 //****************************************************************************
 
 // USER CODE BEGIN (Tmr7,1)
-uint8 CC2Circle =0;
+
 // USER CODE END
 
 void CC2_viTmr7(void) interrupt CC2_T7INT
 {
   // USER CODE BEGIN (Tmr7,2)
-	CC2Circle++;
   // USER CODE END
 
 } //  End of function CC2_viTmr7
@@ -352,46 +343,17 @@ void CC2_viTmr7(void) interrupt CC2_T7INT
 //****************************************************************************
 
 // USER CODE BEGIN (CC20,1)
-bit pending_bit = 0;
-uint16 CC2_ft =0;
-uint16 CC2_st =0;
+
 // USER CODE END
 
 void CC2_viCC20(void) interrupt CC2_CC20INT
 {
-	if(pending_bit)
-	{
-		return;
-	}
-	pending_bit = 1;
-	if(CC2_M5 ==  0x0001)	//上升沿捕获
-	{
-		CC2_ft = CC2_uwReadTmr(CC2_TIMER_7);//us
-		//se_float = CCU60_T12PR - 384;//203=2.65/0.013  384=5/0.013
-		//settest(fi_float);
-		//if(fi_float >= se_float)
-		//{
-			//setPWMState();
-		//}
-		//CC2_vClearTmr(CC2_TIMER_8);
-		CC2Circle = 0;
-		CC2_M5 =  0x0002;//下降沿捕获
-	}
-	else if(CC2_M5 ==  0x0002)//下降沿捕获
-	{
-		CC2_st = CC2_uwReadTmr(CC2_TIMER_7);
-		//CC2_vClearTmr(CC2_TIMER_8);	
-		//CC2_vStartTmr(CC2_TIMER_8);
-		setPWMState(CC2Circle,CC2_ft,CC2_st);
-		CC2_M5 = 0x0001;	//上升沿捕获
-	}
-	pending_bit = 0;
   // USER CODE BEGIN (CC20,2)
-	//if(CC2_vStateTmr(CC2_TIMER_8) && (CC2_uwReadTmr(CC2_TIMER_8) <=50))
-	//{
-	//	setPWMState();	
-	//}
-	//CC2_vClearTmr(CC2_TIMER_8);
+	CC2_vStopTmr(CC2_TIMER_7);
+	if(CC2_uwReadTmr(CC2_TIMER_7) <=30)//当计时小于3uS时，频率不能下降
+	{
+		setTmrPeriod(FALSE);
+	}
   // USER CODE END
 
 } //  End of function CC2_viCC20
