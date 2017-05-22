@@ -286,7 +286,7 @@ void CCU60_vInit(void)
                                  // pointer register
 
   CCU60_IEN      =  0x0483;      // Load CCU60 capture/compare interrupt 
-                                 // enable register
+                                 // enable register												 
 
 
   ///  -----------------------------------------------------------------------

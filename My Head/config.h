@@ -54,7 +54,7 @@
 51-VSS
 52-VDDPB
 53-P0.0					USIC_CAN 2-4-8
-54-P2.7					LM2904 1_OUT /上升沿比较
+54-P2.7					LM2903 1_OUT /上升沿比较
 55-P0.1
 56-P2.8					ATML   SCLK
 57-P2.9					电源端 1-4
@@ -141,6 +141,9 @@
 
 #define TRAP (CCU60_IS & 0x0400)
 
+#define INT_OPEN (PSW_IEN=0)
+#define INT_CLOSE (PSW_IEN=1)
+
 
 enum LED_STATE
 {
@@ -149,6 +152,6 @@ enum LED_STATE
   FLUSH
 };
 //故障代码10000以上为保留字段
-#define DEBUG
+//#define DEBUG
 
 #endif /* _CONFIG_H_ */

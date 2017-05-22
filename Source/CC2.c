@@ -140,8 +140,8 @@ void CC2_vInit(void)
   ///  -----------------------------------------------------------------------
   ///  Configuration of CAPCOM2 Control:
   ///  -----------------------------------------------------------------------
-  ///  - staggered mode is enabled
-
+  ///  - staggered mode is disabled
+  CC2_IOC        =  0x0004;      // load CAPCOM2 I/O control register
   ///  -----------------------------------------------------------------------
   ///  Configuration of CAPCOM2 Timer 7:
   ///  -----------------------------------------------------------------------
@@ -155,7 +155,7 @@ void CC2_vInit(void)
   ///  - timer 8 works in timer mode
   ///  - prescaler factor is 8
   ///  - timer 8 run bit is reset
-
+	//CC2_T78CON     =  0x0003;
 
   ///  -----------------------------------------------------------------------
   ///  Configuration of the used CAPCOM2 Timer Port Pins:
@@ -277,6 +277,8 @@ void CC2_vInit(void)
 
 
 
+	CC2_T78CON_T7R    = 1;    // set CAPCOM2 timer 7 run bit
+
 
   // USER CODE BEGIN (CC31,3)
 
@@ -307,7 +309,6 @@ void CC2_vInit(void)
 //****************************************************************************
 
 // USER CODE BEGIN (Tmr7,1)
-
 // USER CODE END
 
 void CC2_viTmr7(void) interrupt CC2_T7INT
@@ -343,16 +344,43 @@ void CC2_viTmr7(void) interrupt CC2_T7INT
 //****************************************************************************
 
 // USER CODE BEGIN (CC20,1)
-
+//uint16 period;
+volatile uint16 static previous_CC20;
+volatile int32 static temp_CC20;
 // USER CODE END
 
 void CC2_viCC20(void) interrupt CC2_CC20INT
 {
+//	uint16 static previous_CC20,first_time = 1;
   // USER CODE BEGIN (CC20,2)
-	CC2_vStopTmr(CC2_TIMER_7);
-	if(CC2_uwReadTmr(CC2_TIMER_7) <=30)//当计时小于3uS时，频率不能下降
+//	if(first_time == 1)
+//	{
+//		previous_CC20 = CC2_CC20;
+//		first_time = 0;
+//	}
+//	else
+//	{
+//		period = (CC2_CC20 - previous_CC20)*0.013;
+//		previous_CC20 = CC2_CC20;
+//		settest(period);
+//	}
+	if(CC2_M5 == 1)
 	{
-		setTmrPeriod(FALSE);
+		previous_CC20 = CC2_CC20;
+		CC2_M5 = 2;
+	}
+	else if(CC2_M5 == 2)
+	{
+		previous_CC20 = CC2_CC20-previous_CC20;
+		temp_CC20 = CCU60_T12PR;
+		temp_CC20 = temp_CC20-previous_CC20;
+
+		if(temp_CC20>0 && temp_CC20<340)//203=2.65/0.013  384=5/0.013
+		{
+			setPWMState();
+		}
+		//settest(temp_CC20);
+		CC2_M5 = 1;
 	}
   // USER CODE END
 

@@ -2,12 +2,9 @@
 
 #include "PWM.h"
 
-volatile uint16 pwm =PWM_MIN;//	// CCU60_T12PR=0x095F -16.66    0x0476 -35KHZ
-uint4 run = 0;//1 run  0stop
-
-uint8 circle_num =0;
-uint16 fi_float =0;
-uint16 se_float =0;
+static volatile uint16 pwm =PWM_MIN;//	// CCU60_T12PR=0x095F -16.66    0x0476 -35KHZ
+static bit pwm_run =0;//0关闭 1开启
+static bit pwm_state = 0;
 
 void fixPWM(uint8 index)
 {
@@ -35,10 +32,10 @@ void fixPWM(uint8 index)
 						stopPWM();
       return;
           case 1:
-            p = PWM1;
+						p = PWM1;
       break;
           case 2:
-            p = PWM2;
+						p = PWM2;
       break;
           case 3:
             p = PWM3;
@@ -62,9 +59,10 @@ void fixPWM(uint8 index)
 						stopPWM();			
 			return;
     }
-		if(PWM_state())
+		if(pwm_state==1)
 		{
 			setTmrPeriod(0);
+			pwm_state=0;
 		}
 		else
 		{
@@ -86,32 +84,32 @@ void fixPWM(uint8 index)
 		}
     openPWM();
 }
-
-bit PWMRun()
-{
-	return run;
-}
 void openPWM()
 {
 	  CCU60_ISR |= 0x0400;//trap  软件复位		
 		CCU60_vStartTmr(CCU60_TIMER_12);
-		run = 1;
+		pwm_run =1;
 }
 void stopPWM()
 {
 		CCU60_ISS |= 0x0400;//trap  软件复位
 		pwm=PWM_MIN;
-		run = 0;
+		pwm_run =0;
+}
+bit PWMRun()
+{
+	return pwm_run;
 }
 bit PWMChange()
 {
-	return pwm<=PWM_MIN+5;
+	return pwm<=(PWM_MIN+5)?1:0;
 }
-void setPWMState(uint8 cn,uint16 ff,uint16 sf)
+void setPWMState()
 {
-	circle_num =cn;
-	fi_float =ff;
-	se_float =sf;
+	if(pwm_state == 0)
+	{
+		pwm_state = 1;
+	}
 }
 
 void setTmrPeriod(bit add)
@@ -121,36 +119,6 @@ void setTmrPeriod(bit add)
 		CCU60_vSetTmrPeriod(CCU60_TIMER_12,pwm);
 		CCU60_CC60SR=pwm/2;
 		CCU60_vEnableShadowTransfer(CCU60_TIMER_12);
-}
-//1表示PWM不能再小了
-bit PWM_state()
-{
-	uint16 num = 0;
-	if(circle_num == 0)
-	{
-		num= se_float - fi_float;
-		if((se_float - fi_float) > 384)//203=2.65/0.013  384=5/0.013
-		{
-			return 1;
-		}
-		else
-		{
-			return 0;
-		}
-	}
-	else
-	{
-		num=(65535-se_float)+fi_float+65535*(circle_num-1);
-		if(num > 384)
-		{
-			return 1;
-		}
-		else
-		{
-			return 0;
-		}
-	}
-	settest((int16)num);
 }
 uint4 getPWMRate()
 {

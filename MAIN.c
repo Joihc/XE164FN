@@ -723,8 +723,8 @@ void ViewSet(uint16 ShowNum)
 			//set_TM1629_Down(get_pot_temp(), 1);
 			//set_TM1629_Down(get_in_ampere(), 1);
 			//set_TM1629_Down(get_vol(), 1);//get_vol()
-			set_TM1629_Down(mainTest, 1);
-			//set_TM1629_Down(get_igbt_two_temp(), 1);
+			//set_TM1629_Down(mainTest, 1);
+			set_TM1629_Down(get_igbt_two_temp(), 1);
 	}
 	else
 	{
@@ -1066,7 +1066,7 @@ void DetectVLow()
 		//正常且不正常
 		statueViewCheckTime[7] =0;
 		statueViewCheckTimeOut[7]++;
-		if(statueViewCheckTimeOut[7]>=50)
+		if(statueViewCheckTimeOut[7]>=10)
 		{	
 			statueViewCheckTimeOut[7]=0;
 			statusViewNum &= ~temp_2;//电压低
@@ -1084,7 +1084,7 @@ void DetectVLow()
 	{
 		//不正常且正常
 		statueViewCheckTime[7]++;
-		if (statueViewCheckTime[7] >= 50)
+		if (statueViewCheckTime[7] >= 10)
 		{
 			statueViewCheckTime[7] =0;
 			statusViewNum |= temp_2;//置1 不正常
@@ -1120,7 +1120,7 @@ void DetectVHight()
 		//正常且不正常
 		statueViewCheckTime[8] = 0;
 		statueViewCheckTimeOut[8]++;
-		if(statueViewCheckTimeOut[8]>=50)
+		if(statueViewCheckTimeOut[8]>=10)
 		{
 			statueViewCheckTimeOut[8]=0;
 			statusViewNum &= ~temp_2;//电压低
@@ -1138,7 +1138,7 @@ void DetectVHight()
 	{
 		//不正常且正常
 		statueViewCheckTime[8]++;
-		if (statueViewCheckTime[8] >= 50)
+		if (statueViewCheckTime[8] >= 10)
 		{
 			statueViewCheckTime[8] = 0;
 			statusViewNum |= temp_2;//置1 不正常
@@ -1362,7 +1362,6 @@ void DetectTransformerCut()
 	if (temp && !PWMChange() && (statusViewNum & temp_2)&&(statueViewCheckTimedelay[15]>=4))
 	{
 		//正常且不正常 0档置位
-		delay(2);
 		statueViewCheckTime[15] =0;
 		return;
 	}
@@ -1376,7 +1375,7 @@ void DetectTransformerCut()
 	{
 		//不正常且正常		
 		statueViewCheckTime[15]++;
-		if (statueViewCheckTime[15] >=200)
+		if (statueViewCheckTime[15] >=300)
 		{
 			statueViewCheckTime[15] = 0;
 			statusViewNum |= temp_2;//置1 不正常
