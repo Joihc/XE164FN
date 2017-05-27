@@ -8,7 +8,10 @@
 bin/
 tmp/
 listings/
-Objects/
+.obj
+.iex
+.lnp
+.SBR
 *.tmp
 *.bak
 *.swp
@@ -216,3 +219,6 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+XE164FN.uvgui.Administrator
+Objects/ExtDll.iex
+Objects/XE164FN.build_log.htm
